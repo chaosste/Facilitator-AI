@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { View, SessionNote, VoiceSettings, SpecialistModule } from './types';
+import { View, SessionNote, VoiceSettings } from './types';
 import { ICONS, BASE_SYSTEM_INSTRUCTION, SPECIALIST_MODULES } from './constants';
 import ChatView from './components/ChatView';
 import LiveVoiceView from './components/LiveVoiceView';
@@ -19,7 +19,6 @@ const App: React.FC = () => {
     accent: 'US'
   });
 
-  // Calculate dynamic system instruction based on bolted-on modules
   const dynamicSystemInstruction = useMemo(() => {
     let instruction = BASE_SYSTEM_INSTRUCTION;
     activeModuleIds.forEach(id => {
@@ -31,7 +30,6 @@ const App: React.FC = () => {
     return instruction;
   }, [activeModuleIds]);
 
-  // Persistence of notes, settings, and modules
   useEffect(() => {
     const savedNotes = localStorage.getItem('counselai_notes');
     if (savedNotes) {
@@ -86,34 +84,32 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-slate-50 overflow-hidden">
+    <div className="flex flex-col h-screen bg-[#0a0a0a] text-[#f4f1ea] overflow-hidden aura-bg">
       {/* Header */}
-      <header className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between z-10 shadow-sm">
+      <header className="bg-[#0a0a0a] border-b border-[#d4af37]/10 px-8 py-6 flex items-center justify-between z-10">
         <div 
-          className="flex items-center gap-3 cursor-pointer"
+          className="flex items-center gap-4 cursor-pointer group"
           onClick={() => setCurrentView(View.HOME)}
         >
-          <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-indigo-100">C</div>
-          <h1 className="text-xl font-bold text-slate-800 font-serif">CounselAI</h1>
+          <div className="w-12 h-12 bg-[#1a1a1a] border border-[#d4af37]/30 rounded-full flex items-center justify-center text-[#d4af37] font-serif text-2xl shadow-[0_0_15px_rgba(212,175,55,0.1)] group-hover:border-[#d4af37] transition-all duration-700">C</div>
+          <h1 className="text-2xl font-medium text-[#f4f1ea] font-serif tracking-widest uppercase">CounselAI</h1>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-4">
            {activeModuleIds.length > 0 && (
-             <div className="hidden sm:flex items-center gap-1 bg-indigo-50 px-3 py-1 rounded-full text-xs font-bold text-indigo-600">
-                <span className="w-2 h-2 bg-indigo-500 rounded-full animate-pulse"></span>
-                {activeModuleIds.length} SPECIALIZED {activeModuleIds.length === 1 ? 'SKILL' : 'SKILLS'}
+             <div className="hidden sm:flex items-center gap-2 border border-[#d4af37]/20 px-4 py-1.5 rounded-full text-[10px] tracking-widest font-bold text-[#d4af37] uppercase">
+                <span className="w-1 h-1 bg-[#d4af37] rounded-full animate-pulse shadow-[0_0_5px_#d4af37]"></span>
+                {activeModuleIds.length} Attunements Active
              </div>
            )}
            <button 
             onClick={() => setCurrentView(View.SETTINGS)}
-            className={`p-2 rounded-full transition-colors ${currentView === View.SETTINGS ? 'bg-indigo-50 text-indigo-600' : 'hover:bg-slate-100 text-slate-500'}`}
-            title="Settings"
+            className={`p-2.5 rounded-full transition-all duration-500 ${currentView === View.SETTINGS ? 'bg-[#d4af37]/10 text-[#d4af37]' : 'text-[#f4f1ea]/40 hover:text-[#d4af37]'}`}
           >
             <ICONS.Settings />
           </button>
            <button 
             onClick={() => setShowCrisisInfo(!showCrisisInfo)}
-            className="p-2 hover:bg-red-50 rounded-full transition-colors text-red-500"
-            title="Crisis Support"
+            className="p-2.5 text-red-400 hover:text-red-300 transition-all"
           >
             <ICONS.Info />
           </button>
@@ -123,41 +119,25 @@ const App: React.FC = () => {
       {/* Main Area */}
       <main className="flex-1 overflow-hidden relative">
         {showCrisisInfo && (
-          <div className="absolute inset-x-0 top-0 bg-red-600 text-white p-6 z-50 animate-slide-down flex justify-between items-start shadow-xl">
+          <div className="absolute inset-x-0 top-0 bg-[#3a0b0b] border-b border-red-900/50 text-[#fca5a5] p-6 z-50 animate-in slide-in-from-top duration-700 flex justify-between items-start shadow-2xl backdrop-blur-xl">
             <div className="max-w-4xl mx-auto flex gap-6 items-start">
-              <div className="mt-1">
-                <ICONS.Info />
-              </div>
+              <ICONS.Info />
               <div className="space-y-4">
                 <div>
-                  <p className="font-bold text-lg mb-1">Need help right now?</p>
-                  <p className="text-sm opacity-90 leading-relaxed">If you are in immediate danger, call your local emergency services. Text HOME to 741741 or call 988 (USA/Canada).</p>
-                </div>
-                <div>
-                  <p className="font-bold text-lg mb-1">Struggling?</p>
-                  <p className="text-sm opacity-90 leading-relaxed">
-                    If you are in immediate danger, call your local emergency services. ICEERS offer free support by appointment {' '}
-                    <a 
-                      href="https://www.iceers.org/support-center-2/" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="underline font-bold hover:text-red-100 transition-colors"
-                    >
-                      [visit support center]
-                    </a>.
-                  </p>
+                  <p className="font-serif italic text-xl mb-1 text-white">In immediate distress?</p>
+                  <p className="text-sm opacity-80 leading-relaxed tracking-wide">If you are in danger, please reach out to emergency services. Text HOME to 741741 or call 988.</p>
                 </div>
               </div>
             </div>
-            <button onClick={() => setShowCrisisInfo(false)} className="p-2 hover:bg-red-700 rounded-lg shrink-0 ml-4">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+            <button onClick={() => setShowCrisisInfo(false)} className="p-2 hover:bg-red-950/50 rounded-full">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="w-6 h-6">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
         )}
 
-        <div className="h-full w-full max-w-5xl mx-auto p-4 md:p-6 lg:p-8">
+        <div className="h-full w-full max-w-6xl mx-auto p-4 md:p-8 lg:p-12">
           {currentView === View.HOME && <HomeView setView={setCurrentView} activeModuleIds={activeModuleIds} />}
           {currentView === View.CHAT && <ChatView onAddNote={addNote} systemInstruction={dynamicSystemInstruction} />}
           {currentView === View.VOICE && <LiveVoiceView onAddNote={addNote} voiceSettings={voiceSettings} systemInstruction={dynamicSystemInstruction} />}
@@ -174,10 +154,10 @@ const App: React.FC = () => {
       </main>
 
       {/* Navigation */}
-      <nav className="bg-white border-t border-slate-200 py-3 px-6 flex justify-around items-center md:justify-center md:gap-16">
+      <nav className="bg-[#0a0a0a]/80 backdrop-blur-md border-t border-[#d4af37]/10 py-6 px-10 flex justify-around items-center md:justify-center md:gap-24">
         <NavButton active={currentView === View.HOME} onClick={() => setCurrentView(View.HOME)} icon={<ICONS.Home />} label="Home" />
-        <NavButton active={currentView === View.CHAT} onClick={() => setCurrentView(View.CHAT)} icon={<ICONS.Chat />} label="Chat" />
-        <NavButton active={currentView === View.VOICE} onClick={() => setCurrentView(View.VOICE)} icon={<ICONS.Mic />} label="Voice" />
+        <NavButton active={currentView === View.CHAT} onClick={() => setCurrentView(View.CHAT)} icon={<ICONS.Chat />} label="Dialogue" />
+        <NavButton active={currentView === View.VOICE} onClick={() => setCurrentView(View.VOICE)} icon={<ICONS.Mic />} label="Communion" />
         <NavButton active={currentView === View.NOTES} onClick={() => setCurrentView(View.NOTES)} icon={<ICONS.Note />} label="Journal" />
       </nav>
     </div>
@@ -192,9 +172,9 @@ interface NavButtonProps {
 }
 
 const NavButton: React.FC<NavButtonProps> = ({ active, onClick, icon, label }) => (
-  <button onClick={onClick} className={`flex flex-col items-center gap-1 transition-all px-4 py-1 rounded-xl ${active ? 'text-indigo-600 scale-110' : 'text-slate-400 hover:text-slate-600'}`}>
-    {icon}
-    <span className="text-[10px] uppercase tracking-wider font-bold">{label}</span>
+  <button onClick={onClick} className={`flex flex-col items-center gap-2 transition-all duration-700 ${active ? 'text-[#d4af37] scale-105' : 'text-[#f4f1ea]/30 hover:text-[#f4f1ea]/60'}`}>
+    <div className="transition-transform duration-700">{icon}</div>
+    <span className="text-[9px] uppercase tracking-[0.2em] font-medium">{label}</span>
   </button>
 );
 
