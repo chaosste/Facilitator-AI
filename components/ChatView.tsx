@@ -80,24 +80,24 @@ const ChatView: React.FC<ChatViewProps> = ({ onAddNote, systemInstruction }) => 
       }
     } catch (error) {
       console.error("Chat error:", error);
-      setMessages(prev => [...prev, { role: 'assistant', text: "The connection to inner space is temporarily clouded. Please try again soon.", timestamp: new Date() }]);
+      setMessages(prev => [...prev, { role: 'assistant', text: "The connection to your inner space is temporarily clouded. Please try again soon.", timestamp: new Date() }]);
     } finally {
       setIsTyping(false);
     }
   };
 
   return (
-    <div className="flex flex-col h-full rounded-[3rem] overflow-hidden border border-[#d4af37]/10 mystic-glass shadow-2xl">
+    <div className="flex flex-col h-full rounded-[3rem] overflow-hidden border border-[#96adb3]/10 mystic-glass shadow-xl bg-white/40">
       <div ref={scrollRef} className="flex-1 overflow-y-auto p-8 space-y-8 scroll-smooth">
         {messages.map((msg, i) => (
           <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-4 duration-1000`}>
-            <div className={`max-w-[80%] px-6 py-4 rounded-[2rem] ${
+            <div className={`max-w-[80%] px-7 py-5 rounded-[2.2rem] shadow-sm ${
               msg.role === 'user' 
-                ? 'bg-[#d4af37]/10 text-[#f4f1ea] border border-[#d4af37]/30' 
-                : 'bg-[#1a1a1a]/80 text-[#f4f1ea]/90 border border-white/5'
+                ? 'bg-[#96adb3] text-white' 
+                : 'bg-white text-[#2c3e50] border border-[#96adb3]/10'
             }`}>
               <p className="text-sm leading-relaxed font-light tracking-wide">{msg.text}</p>
-              <span className="text-[9px] uppercase tracking-widest opacity-30 block mt-3 font-bold">
+              <span className={`text-[9px] uppercase tracking-widest block mt-3 font-bold opacity-40`}>
                 {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </span>
             </div>
@@ -105,16 +105,16 @@ const ChatView: React.FC<ChatViewProps> = ({ onAddNote, systemInstruction }) => 
         ))}
         {isTyping && (
           <div className="flex justify-start">
-            <div className="bg-[#1a1a1a]/80 px-6 py-4 rounded-[2rem] border border-white/5 flex gap-2 items-center">
-              <div className="w-1 h-1 bg-[#d4af37] rounded-full animate-pulse"></div>
-              <div className="w-1 h-1 bg-[#d4af37] rounded-full animate-pulse [animation-delay:0.2s]"></div>
-              <div className="w-1 h-1 bg-[#d4af37] rounded-full animate-pulse [animation-delay:0.4s]"></div>
+            <div className="bg-white px-6 py-4 rounded-[2rem] border border-[#96adb3]/10 flex gap-2 items-center shadow-sm">
+              <div className="w-1.5 h-1.5 bg-[#96adb3] rounded-full animate-pulse"></div>
+              <div className="w-1.5 h-1.5 bg-[#96adb3] rounded-full animate-pulse [animation-delay:0.2s]"></div>
+              <div className="w-1.5 h-1.5 bg-[#96adb3] rounded-full animate-pulse [animation-delay:0.4s]"></div>
             </div>
           </div>
         )}
       </div>
 
-      <div className="p-6 bg-[#0a0a0a]/50 border-t border-[#d4af37]/10">
+      <div className="p-6 bg-[#fdfaf6]/80 backdrop-blur-md border-t border-[#96adb3]/10">
         <div className="flex gap-4 max-w-4xl mx-auto">
           <input 
             type="text"
@@ -122,12 +122,12 @@ const ChatView: React.FC<ChatViewProps> = ({ onAddNote, systemInstruction }) => 
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
             placeholder="Share your reflection..."
-            className="flex-1 bg-[#1a1a1a] border border-[#d4af37]/10 text-[#f4f1ea] rounded-full px-8 py-4 focus:outline-none focus:border-[#d4af37]/50 focus:ring-0 transition-all duration-700 tracking-wide font-light placeholder:text-[#f4f1ea]/20"
+            className="flex-1 bg-white border border-[#96adb3]/20 text-[#2c3e50] rounded-full px-8 py-4 focus:outline-none focus:border-[#96adb3] focus:ring-0 transition-all duration-700 tracking-wide font-light placeholder:text-[#2c3e50]/20"
           />
           <button 
             onClick={handleSend}
             disabled={!input.trim() || isTyping}
-            className="bg-[#d4af37] text-[#0a0a0a] px-8 py-4 rounded-full font-bold uppercase tracking-[0.2em] text-[10px] hover:bg-[#f4f1ea] disabled:opacity-20 transition-all duration-700 active:scale-95 shadow-lg shadow-[#d4af37]/10"
+            className="bg-[#96adb3] text-white px-8 py-4 rounded-full font-bold uppercase tracking-[0.2em] text-[10px] hover:bg-[#2c3e50] disabled:opacity-20 transition-all duration-700 active:scale-95 shadow-md"
           >
             Submit
           </button>

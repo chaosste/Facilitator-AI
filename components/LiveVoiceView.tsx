@@ -188,26 +188,26 @@ const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({ onAddNote, voiceSettings,
   return (
     <div className="h-full flex flex-col justify-center items-center space-y-16 animate-in fade-in duration-1000">
       <div className="text-center space-y-3">
-        <h2 className="text-4xl font-serif italic text-[#f4f1ea] tracking-tight">Sacred Communion</h2>
-        <p className="text-[#d4af37] text-[10px] uppercase tracking-[0.3em] font-bold">Resonating through: {voiceSettings.voiceName}</p>
+        <h2 className="text-4xl font-serif italic text-[#2c3e50] tracking-tight">Sacred Communion</h2>
+        <p className="text-[#96adb3] text-[10px] uppercase tracking-[0.3em] font-bold tracking-widest">Auditory Vessel: {voiceSettings.voiceName}</p>
       </div>
 
       <div className="relative flex items-center justify-center">
         {/* Glow rings */}
-        <div className="absolute w-64 h-64 bg-[#d4af37]/5 rounded-full blur-3xl transition-transform duration-300" style={{ transform: `scale(${visualizerScale * 1.8})` }}></div>
-        <div className="absolute w-48 h-48 border border-[#d4af37]/20 rounded-full transition-transform duration-200" style={{ transform: `scale(${visualizerScale})` }}></div>
+        <div className="absolute w-64 h-64 bg-[#96adb3]/5 rounded-full blur-3xl transition-transform duration-300" style={{ transform: `scale(${visualizerScale * 1.8})` }}></div>
+        <div className="absolute w-48 h-48 border border-[#96adb3]/20 rounded-full transition-transform duration-200" style={{ transform: `scale(${visualizerScale})` }}></div>
         
         <button 
           onClick={isActive ? stopSession : startSession}
           disabled={isConnecting}
-          className={`relative z-10 w-48 h-48 rounded-full flex flex-col items-center justify-center shadow-[0_0_50px_rgba(0,0,0,0.5)] transition-all duration-1000 group ${
+          className={`relative z-10 w-48 h-48 rounded-full flex flex-col items-center justify-center shadow-xl transition-all duration-1000 group ${
             isActive 
-              ? 'bg-[#3a0b0b] border border-red-900/50 text-red-200' 
-              : 'bg-[#111111] border border-[#d4af37]/30 text-[#d4af37] hover:border-[#d4af37] hover:scale-105 gold-glow'
+              ? 'bg-[#fff5f5] border border-red-200 text-red-600' 
+              : 'bg-white border border-[#96adb3]/30 text-[#96adb3] hover:border-[#96adb3] hover:scale-105 duck-egg-glow'
           }`}
         >
           {isConnecting ? (
-            <span className="text-[10px] uppercase tracking-[0.2em] font-bold animate-pulse">Aligning...</span>
+            <span className="text-[10px] uppercase tracking-[0.2em] font-bold animate-pulse text-[#96adb3]">Aligning...</span>
           ) : isActive ? (
             <span className="text-[10px] uppercase tracking-[0.2em] font-bold">Depart Session</span>
           ) : (
@@ -216,10 +216,10 @@ const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({ onAddNote, voiceSettings,
         </button>
       </div>
 
-      <div className="h-20 flex items-center justify-center">
+      <div className="h-24 flex items-center justify-center">
         {isActive && (
-          <div className="max-w-md w-full text-center space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-             <p className="text-[#f4f1ea]/40 text-sm font-light italic tracking-widest">{transcription || "The vessel is open. Speak your truth..."}</p>
+          <div className="max-w-md w-full text-center space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-1000 px-6">
+             <p className="text-[#2c3e50]/50 text-sm font-light italic tracking-widest leading-relaxed">{transcription || "The vessel is open. Speak your truth..."}</p>
           </div>
         )}
       </div>
