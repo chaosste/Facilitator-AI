@@ -164,10 +164,20 @@ const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({ onAddNote, voiceSettings,
   };
 
   const stopSession = useCallback(() => {
-    if (sessionRef.current) sessionRef.current.close();
-    if (streamRef.current) streamRef.current.getTracks().forEach(track => track.stop());
-    if (audioContextRef.current) audioContextRef.current.close();
-    if (outputAudioContextRef.current) outputAudioContextRef.current.close();
+    if (sessionRef.current) {
+      try { sessionRef.current.close(); } catch(e) {}
+      sessionRef.current = null;
+    }
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
+    }
+    if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
+      audioContextRef.current.close().catch(() => {});
+    }
+    if (outputAudioContextRef.current && outputAudioContextRef.current.state !== 'closed') {
+      outputAudioContextRef.current.close().catch(() => {});
+    }
     setIsActive(false);
     setIsConnecting(false);
     setVisualizerScale(1);
@@ -176,28 +186,43 @@ const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({ onAddNote, voiceSettings,
   useEffect(() => { return () => stopSession(); }, [stopSession]);
 
   return (
-    <div className="h-full flex flex-col justify-center items-center space-y-12">
-      <div className="text-center">
-        <h2 className="text-3xl font-bold text-slate-900 font-serif mb-2">Voice Session</h2>
-        <p className="text-slate-500 italic">Active voice: {voiceSettings.voiceName}</p>
+    <div className="h-full flex flex-col justify-center items-center space-y-16 animate-in fade-in duration-1000">
+      <div className="text-center space-y-3">
+        <h2 className="text-4xl font-serif italic text-[#f4f1ea] tracking-tight">Sacred Communion</h2>
+        <p className="text-[#d4af37] text-[10px] uppercase tracking-[0.3em] font-bold">Resonating through: {voiceSettings.voiceName}</p>
       </div>
 
       <div className="relative flex items-center justify-center">
-        <div className="absolute w-48 h-48 bg-indigo-100 rounded-full opacity-30 transition-transform duration-75" style={{ transform: `scale(${visualizerScale * 1.5})` }}></div>
+        {/* Glow rings */}
+        <div className="absolute w-64 h-64 bg-[#d4af37]/5 rounded-full blur-3xl transition-transform duration-300" style={{ transform: `scale(${visualizerScale * 1.8})` }}></div>
+        <div className="absolute w-48 h-48 border border-[#d4af37]/20 rounded-full transition-transform duration-200" style={{ transform: `scale(${visualizerScale})` }}></div>
+        
         <button 
           onClick={isActive ? stopSession : startSession}
           disabled={isConnecting}
-          className={`relative z-10 w-48 h-48 rounded-full flex flex-col items-center justify-center shadow-2xl transition-all duration-300 transform active:scale-95 ${isActive ? 'bg-red-500 hover:bg-red-600 text-white' : 'bg-indigo-600 hover:bg-indigo-700 text-white'}`}
+          className={`relative z-10 w-48 h-48 rounded-full flex flex-col items-center justify-center shadow-[0_0_50px_rgba(0,0,0,0.5)] transition-all duration-1000 group ${
+            isActive 
+              ? 'bg-[#3a0b0b] border border-red-900/50 text-red-200' 
+              : 'bg-[#111111] border border-[#d4af37]/30 text-[#d4af37] hover:border-[#d4af37] hover:scale-105 gold-glow'
+          }`}
         >
-          {isConnecting ? <span className="font-bold">Connecting...</span> : isActive ? <><span className="font-bold uppercase tracking-widest text-sm">End</span></> : <><span className="font-bold uppercase tracking-widest text-sm">Speak</span></>}
+          {isConnecting ? (
+            <span className="text-[10px] uppercase tracking-[0.2em] font-bold animate-pulse">Aligning...</span>
+          ) : isActive ? (
+            <span className="text-[10px] uppercase tracking-[0.2em] font-bold">Depart Session</span>
+          ) : (
+            <span className="text-[10px] uppercase tracking-[0.2em] font-bold">Commence</span>
+          )}
         </button>
       </div>
 
-      {isActive && (
-        <div className="max-w-md w-full text-center space-y-4 animate-in fade-in duration-500">
-           <p className="text-slate-400 text-sm italic">{transcription || "Listening..."}</p>
-        </div>
-      )}
+      <div className="h-20 flex items-center justify-center">
+        {isActive && (
+          <div className="max-w-md w-full text-center space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+             <p className="text-[#f4f1ea]/40 text-sm font-light italic tracking-widest">{transcription || "The vessel is open. Speak your truth..."}</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
