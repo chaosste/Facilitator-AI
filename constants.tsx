@@ -70,7 +70,7 @@ VOICE ATTRIBUTES & PACING:
 - Speak with a SLOWER, MORE GENTLE, and DELIBERATE pace. 
 - Use frequent pauses to allow the user to reflect. 
 - Your tone is soft, warm, and inviting.
-- Current User Accent Preference: {accent}. If Dutch, incorporate a subtle warmth and directness characteristic of the culture.
+- Current User Accent Preference: UK English.
 
 MANDATORY FIRST STEP - NAME VERIFICATION:
 - In your VERY FIRST message, you MUST greet the user by their name: {userName}.
@@ -107,24 +107,8 @@ export const SPECIALIST_MODULES: SpecialistModule[] = [
 ];
 
 export const AVAILABLE_VOICES: (VoiceSettings & { label: string })[] = [
-  // US Voices
-  { voiceName: 'Kore', gender: 'feminine', accent: 'US', label: 'Kore (US Feminine)' },
-  { voiceName: 'Zephyr', gender: 'neutral', accent: 'US', label: 'Zephyr (US Neutral)' },
-  { voiceName: 'Puck', gender: 'masculine', accent: 'US', label: 'Puck (US Masculine)' },
-  { voiceName: 'Charon', gender: 'masculine', accent: 'US', label: 'Charon (US Deep)' },
-  { voiceName: 'Fenrir', gender: 'masculine', accent: 'US', label: 'Fenrir (US Soft)' },
-  
-  // UK Styled Voices
-  { voiceName: 'Kore', gender: 'feminine', accent: 'UK', label: 'Kore (UK)' },
-  { voiceName: 'Zephyr', gender: 'neutral', accent: 'UK', label: 'Zephyr (UK)' },
-  { voiceName: 'Puck', gender: 'masculine', accent: 'UK', label: 'Puck (UK)' },
-  { voiceName: 'Charon', gender: 'masculine', accent: 'UK', label: 'Charon (UK Deep)' },
-  
-  // Dutch Styled Voices
-  { voiceName: 'Kore', gender: 'feminine', accent: 'Dutch', label: 'Kore (Dutch)' },
-  { voiceName: 'Zephyr', gender: 'neutral', accent: 'Dutch', label: 'Zephyr (Dutch)' },
-  { voiceName: 'Puck', gender: 'masculine', accent: 'Dutch', label: 'Puck (Dutch)' },
-  { voiceName: 'Fenrir', gender: 'masculine', accent: 'Dutch', label: 'Fenrir (Dutch)' },
+  { voiceName: 'Kore', gender: 'feminine', accent: 'UK', label: 'UK Female' },
+  { voiceName: 'Puck', gender: 'masculine', accent: 'UK', label: 'UK Male' }
 ];
 
 export const ICONS = {

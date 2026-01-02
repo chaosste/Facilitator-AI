@@ -33,8 +33,9 @@ const HomeView: React.FC<HomeViewProps> = ({ setView, activeModuleIds, avatarUrl
         </div>
       </button>
 
-      <div className="max-w-3xl px-6 text-center space-y-6">
-        <h2 className="text-5xl md:text-7xl font-normal text-[#2c3e50] font-serif italic tracking-tight mb-4">
+      {/* Main Header - Updated max-w and text size to match the box above */}
+      <div className="max-w-4xl px-6 text-center space-y-6">
+        <h2 className="text-3xl md:text-5xl font-normal text-[#2c3e50] font-serif italic tracking-tight mb-4">
           …the unreal retreat guru
         </h2>
         <p className="text-lg text-[#2c3e50]/60 mb-8 leading-relaxed font-light tracking-[0.05em] max-w-xl mx-auto">

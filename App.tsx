@@ -21,7 +21,7 @@ const App: React.FC = () => {
   const [voiceSettings, setVoiceSettings] = useState<VoiceSettings>({
     voiceName: 'Kore',
     gender: 'feminine',
-    accent: 'US'
+    accent: 'UK'
   });
 
   const dynamicSystemInstruction = useMemo(() => {
