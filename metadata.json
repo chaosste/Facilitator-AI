@@ -1,5 +1,5 @@
 {
-  "name": "CounselAI_integration",
+  "name": "FacilitatorAI",
   "description": "A sophisticated AI-powered conversational counsellor grounded in the 9 Core Counselling Skills. Features real-time voice interaction, empathic text chat, and structured session note-taking.",
   "requestFramePermissions": [
     "microphone"

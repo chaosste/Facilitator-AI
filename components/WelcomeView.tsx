@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 
 interface WelcomeViewProps {
@@ -19,9 +18,9 @@ const WelcomeView: React.FC<WelcomeViewProps> = ({ onComplete }) => {
     <div className="h-screen w-screen flex flex-col justify-center items-center bg-[#fdfaf6] aura-bg p-8 text-center animate-in fade-in duration-1000">
       <div className="max-w-md w-full space-y-12">
         <div className="space-y-6">
-          <div className="w-20 h-20 bg-white border border-[#96adb3]/30 rounded-full flex items-center justify-center text-[#96adb3] font-serif text-4xl shadow-xl mx-auto">C</div>
-          <h2 className="text-4xl font-serif italic text-[#2c3e50]">Welcome to CounselAI</h2>
-          <p className="text-sm text-[#2c3e50]/40 leading-relaxed font-light tracking-widest uppercase">A sacred clearing for reflective dialogue.</p>
+          <div className="w-20 h-20 bg-white border border-[#96adb3]/30 rounded-full flex items-center justify-center text-[#96adb3] font-serif text-4xl shadow-xl mx-auto">F</div>
+          <h2 className="text-4xl font-serif italic text-[#2c3e50]">Welcome to FacilitatorAI</h2>
+          <p className="text-sm text-[#2c3e50]/40 leading-relaxed font-light tracking-widest uppercase">The unreal retreat guru</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-8">

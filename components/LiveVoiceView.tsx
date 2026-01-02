@@ -7,6 +7,7 @@ interface LiveVoiceViewProps {
   onAddNote: (note: SessionNote) => void;
   voiceSettings: VoiceSettings;
   systemInstruction: string;
+  avatarUrl: string;
 }
 
 const BELL_URL = 'https://storage.cloud.google.com/ai-studio-bucket-572556903588-us-west1/services/self-test-images/Tibetan%20Singing%20Bowl%20Sounds%20-%20OM.mp3';
@@ -44,7 +45,7 @@ const playBellDeclaration: FunctionDeclaration = {
   }
 };
 
-const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({ onAddNote, voiceSettings, systemInstruction }) => {
+const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({ onAddNote, voiceSettings, systemInstruction, avatarUrl }) => {
   const [isActive, setIsActive] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
   const [transcription, setTranscription] = useState<string>('');
@@ -253,19 +254,26 @@ const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({ onAddNote, voiceSettings,
         <button 
           onClick={isActive ? stopSession : startSession}
           disabled={isConnecting}
-          className={`relative z-10 w-48 h-48 rounded-full flex flex-col items-center justify-center shadow-xl transition-all duration-1000 group ${
+          className={`relative z-10 w-48 h-48 rounded-full flex flex-col items-center justify-center shadow-xl transition-all duration-1000 group overflow-hidden ${
             isActive 
               ? 'bg-[#fff5f5] border border-red-200 text-red-600' 
               : 'bg-white border border-[#96adb3]/30 text-[#96adb3] hover:border-[#96adb3] hover:scale-105 duck-egg-glow'
           }`}
         >
-          {isConnecting ? (
-            <span className="text-[10px] uppercase tracking-[0.2em] font-bold animate-pulse text-[#96adb3]">Aligning...</span>
-          ) : isActive ? (
-            <span className="text-[10px] uppercase tracking-[0.2em] font-bold">Depart</span>
-          ) : (
-            <span className="text-[10px] uppercase tracking-[0.2em] font-bold">Commence</span>
-          )}
+          <img 
+            src={avatarUrl} 
+            alt="Presence Avatar" 
+            className={`absolute inset-0 w-full h-full object-cover grayscale-[30%] opacity-20 group-hover:opacity-40 transition-all duration-1000 ${isActive ? 'grayscale-0 opacity-100 scale-110' : ''}`}
+          />
+          <div className="relative z-10 flex flex-col items-center justify-center bg-white/40 backdrop-blur-[2px] w-full h-full">
+            {isConnecting ? (
+              <span className="text-[10px] uppercase tracking-[0.2em] font-bold animate-pulse text-[#96adb3]">Aligning...</span>
+            ) : isActive ? (
+              <span className="text-[10px] uppercase tracking-[0.2em] font-bold bg-white/80 px-4 py-2 rounded-full shadow-sm">Depart</span>
+            ) : (
+              <span className="text-[10px] uppercase tracking-[0.2em] font-bold bg-white/80 px-4 py-2 rounded-full shadow-sm">Commence</span>
+            )}
+          </div>
         </button>
       </div>
 

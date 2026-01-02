@@ -6,6 +6,7 @@ import { ChatMessage, SessionNote } from '../types';
 interface ChatViewProps {
   onAddNote: (note: SessionNote) => void;
   systemInstruction: string;
+  avatarUrl: string;
 }
 
 const writeSessionNoteDeclaration: FunctionDeclaration = {
@@ -32,7 +33,7 @@ const writeSessionNoteDeclaration: FunctionDeclaration = {
   }
 };
 
-const ChatView: React.FC<ChatViewProps> = ({ onAddNote, systemInstruction }) => {
+const ChatView: React.FC<ChatViewProps> = ({ onAddNote, systemInstruction, avatarUrl }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([
     { role: 'assistant', text: "Welcome to this space. How are you feeling in this moment?", timestamp: new Date() }
   ]);
@@ -91,15 +92,22 @@ const ChatView: React.FC<ChatViewProps> = ({ onAddNote, systemInstruction }) => 
       <div ref={scrollRef} className="flex-1 overflow-y-auto p-8 space-y-8 scroll-smooth">
         {messages.map((msg, i) => (
           <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-4 duration-1000`}>
-            <div className={`max-w-[80%] px-7 py-5 rounded-[2.2rem] shadow-sm ${
-              msg.role === 'user' 
-                ? 'bg-[#96adb3] text-white' 
-                : 'bg-white text-[#2c3e50] border border-[#96adb3]/10'
-            }`}>
-              <p className="text-sm leading-relaxed font-light tracking-wide">{msg.text}</p>
-              <span className={`text-[9px] uppercase tracking-widest block mt-3 font-bold opacity-40`}>
-                {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-              </span>
+            <div className={`flex gap-4 items-start ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+              {msg.role === 'assistant' && (
+                <div className="w-8 h-8 rounded-full overflow-hidden border border-[#96adb3]/20 flex-shrink-0">
+                  <img src={avatarUrl} alt="Facilitator" className="w-full h-full object-cover" />
+                </div>
+              )}
+              <div className={`max-w-[85%] px-7 py-5 rounded-[2.2rem] shadow-sm ${
+                msg.role === 'user' 
+                  ? 'bg-[#96adb3] text-white' 
+                  : 'bg-white text-[#2c3e50] border border-[#96adb3]/10'
+              }`}>
+                <p className="text-sm leading-relaxed font-light tracking-wide">{msg.text}</p>
+                <span className={`text-[9px] uppercase tracking-widest block mt-3 font-bold opacity-40`}>
+                  {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                </span>
+              </div>
             </div>
           </div>
         ))}

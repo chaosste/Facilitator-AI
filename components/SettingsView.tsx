@@ -19,7 +19,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ settings, onUpdate, onReset
     onUpdate({ ...settings, gender, voiceName: firstMatch?.voiceName || settings.voiceName });
   };
 
-  const handleAccentChange = (accent: 'US' | 'UK') => {
+  const handleAccentChange = (accent: 'US' | 'UK' | 'Dutch') => {
     const firstMatch = AVAILABLE_VOICES.find(v => v.gender === settings.gender && v.accent === accent);
     onUpdate({ ...settings, accent, voiceName: firstMatch?.voiceName || settings.voiceName });
   };
@@ -62,7 +62,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ settings, onUpdate, onReset
           <div className="space-y-4">
             <label className="text-[9px] font-black text-[#2c3e50]/30 uppercase tracking-[0.2em]">Regional Accent</label>
             <div className="flex gap-2">
-              {(['US', 'UK'] as const).map((a) => (
+              {(['US', 'UK', 'Dutch'] as const).map((a) => (
                 <button
                   key={a}
                   onClick={() => handleAccentChange(a)}
@@ -86,6 +86,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ settings, onUpdate, onReset
               className="w-full bg-white border border-[#96adb3]/10 rounded-2xl px-8 py-5 appearance-none focus:outline-none focus:border-[#96adb3] transition-all duration-700 text-[#2c3e50] font-medium tracking-widest text-sm cursor-pointer shadow-sm hover:border-[#96adb3]/40"
             >
               {filteredVoices.map((v) => <option key={v.voiceName} value={v.voiceName} className="bg-white">{v.label}</option>)}
+              {filteredVoices.length === 0 && <option value={settings.voiceName} className="bg-white">Voice Mismatch - Auto adjusting...</option>}
             </select>
             <div className="absolute right-8 top-1/2 -translate-y-1/2 pointer-events-none text-[#96adb3]/40 group-hover:text-[#96adb3] transition-all duration-700">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">

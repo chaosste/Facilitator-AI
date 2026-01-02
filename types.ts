@@ -12,7 +12,7 @@ export enum View {
 export interface VoiceSettings {
   voiceName: string;
   gender: 'feminine' | 'masculine' | 'neutral';
-  accent: 'US' | 'UK';
+  accent: 'US' | 'UK' | 'Dutch';
 }
 
 export interface SpecialistModule {
@@ -21,6 +21,13 @@ export interface SpecialistModule {
   description: string;
   systemInstruction: string;
   icon: string;
+}
+
+export interface AmbientTrack {
+  id: string;
+  name: string;
+  icon: string;
+  url: string;
 }
 
 export interface ChatMessage {

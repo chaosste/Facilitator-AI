@@ -1,9 +1,42 @@
 
 import React from 'react';
-import { VoiceSettings, SpecialistModule } from './types';
+import { VoiceSettings, SpecialistModule, AmbientTrack } from './types';
+
+export const AVATARS = {
+  feminine: 'https://storage.cloud.google.com/ai-studio-bucket-572556903588-us-west1/services/counsellor_ai_images/facilitator-female-1.jpeg',
+  masculine: 'https://storage.cloud.google.com/ai-studio-bucket-572556903588-us-west1/services/counsellor_ai_images/facilitator-male.jpg',
+  neutral: 'https://storage.cloud.google.com/ai-studio-bucket-572556903588-us-west1/services/counsellor_ai_images/facilitator-female-1.jpeg' // Defaulting to female for neutral
+};
+
+export const AMBIENT_TRACKS: AmbientTrack[] = [
+  {
+    id: 'forest',
+    name: 'Ancient Forest',
+    icon: '🌲',
+    url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3' // Placeholder: substitute with actual nature loops
+  },
+  {
+    id: 'rain',
+    name: 'Gentle Rain',
+    icon: '🌧️',
+    url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3'
+  },
+  {
+    id: 'cosmic',
+    name: 'Cosmic Drift',
+    icon: '✨',
+    url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3'
+  },
+  {
+    id: 'waves',
+    name: 'Ocean Breath',
+    icon: '🌊',
+    url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
+  }
+];
 
 export const BASE_SYSTEM_INSTRUCTION = `
-You are “CounselAI”—a highly modular AI conversational counsellor. Your foundation is built on the 9 core counselling skills (UCP framework).
+You are “FacilitatorAI”—a highly modular AI conversational counsellor. Your foundation is built on the 9 core counselling skills (UCP framework).
 
 Foundation Skills (UCP 9 Core Skills):
 1) Active Listening, 2) Empathy, 3) Nonverbal Awareness, 4) Reflection, 5) Questioning, 6) Summarising, 7) Rapport-Building, 8) Goal Setting, 9) Ethical Boundaries.
@@ -12,12 +45,14 @@ VOICE ATTRIBUTES & PACING:
 - Speak with a SLOWER, MORE GENTLE, and DELIBERATE pace. 
 - Use frequent pauses to allow the user to reflect. 
 - Your tone is soft, warm, and inviting.
+- Current User Accent Preference: {accent}. If Dutch, incorporate a subtle warmth and directness characteristic of the culture while maintaining the English language core.
 
-NAME VERIFICATION:
-- At the start of every session, you MUST greet the user by their name: {userName}.
-- Ask: "Am I pronouncing your name correctly, {userName}?"
-- If they say no, ask for the correct pronunciation, try again, and wait for confirmation.
-- Only proceed with the session once the user confirms you have it right.
+MANDATORY FIRST STEP - NAME VERIFICATION:
+- In your VERY FIRST message of the session, you MUST greet the user by their name: {userName}.
+- You MUST ask this exact question immediately after the greeting: "Am I pronouncing your name correctly, {userName}?"
+- You MUST wait for the user's response. 
+- If they say no, ask for the correct pronunciation or spelling, try again, and wait for confirmation.
+- DO NOT proceed with any other counselling, integration, or circular work until the user confirms you have the pronunciation right.
 
 Core Intent:
 - Offer supportive, non-judgemental conversations.
@@ -51,7 +86,7 @@ STRICT WORKFLOW MODULE: SHARING CIRCLES FACILITATION
 You must follow this sequence exactly, maintaining a slow, gentle pace with long pauses (3-5 seconds) between stages.
 
 1. OPENING:
-- First, greet the user by name and verify pronunciation.
+- First, perform NAME VERIFICATION (as per base instructions).
 - Then, ask: “Are you ready to sit and begin the circle?”
 - If they say yes, pause for 3 seconds, then say: “Great! We’ll begin with a short grounding exercise.”
 - Lead the grounding: 1 minute of 4-2-4 alternate nostril breathing. Use rhythmic, slow cues.
@@ -91,6 +126,9 @@ export const AVAILABLE_VOICES: (VoiceSettings & { label: string })[] = [
   { voiceName: 'Puck', gender: 'masculine', accent: 'US', label: 'Puck (US Masculine)' },
   { voiceName: 'Charon', gender: 'masculine', accent: 'US', label: 'Charon (US Masculine Deep)' },
   { voiceName: 'Fenrir', gender: 'masculine', accent: 'US', label: 'Fenrir (US Masculine Soft)' },
+  { voiceName: 'Kore', gender: 'feminine', accent: 'UK', label: 'Kore (UK Style)' },
+  { voiceName: 'Kore', gender: 'feminine', accent: 'Dutch', label: 'Kore (Dutch Style)' },
+  { voiceName: 'Puck', gender: 'masculine', accent: 'Dutch', label: 'Puck (Dutch Style)' },
 ];
 
 export const ICONS = {
@@ -128,6 +166,11 @@ export const ICONS = {
   Modules: () => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
       <path strokeLinecap="round" strokeLinejoin="round" d="M14.25 6.087c0-.355.186-.676.401-.959.221-.29.349-.634.349-.997 0-.966-.784-1.75-1.75-1.75h-2.5c-.966 0-1.75.784-1.75 1.75 0 .363.128.707.349.997.215.283.401.604.401.959v.331c0 .414-.336.75-.75.75h-.331a1.144 1.144 0 01-.959-.401 1.147 1.147 0 01-.997-.349 1.75 1.75 0 00-1.75 1.75v2.5c0 .966.784 1.75 1.75 1.75.363 0 .707-.128.997-.349.283-.215.604-.401.959-.401h.331c.414 0 .75.336.75.75v.331c0 .355-.186.676-.401.959a1.147 1.147 0 01-.349.997c0 .966.784 1.75 1.75 1.75h2.5c.966 0 1.75-.784 1.75-1.75 0-.363-.128-.707-.349-.997a1.144 1.144 0 01-.401-.959v-.331c0-.414.336-.75.75-.75h.331c.355 0 .676.186.959.401.29.221.634.349.997.349.966 0 1.75-.784 1.75-1.75v-2.5c0-.966-.784-1.75-1.75-1.75a1.147 1.147 0 01-.997.349 1.144 1.144 0 01-.959.401h-.331a.75.75 0 01-.75-.75v-.331z" />
+    </svg>
+  ),
+  Lotus: () => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v18m0-18l3 3m-3-3l-3 3m0 12l3 3m-3-3l3-3m-6-6h12m-12 0l3-3m-3 3l3 3m6 6l-3 3m3-3l-3-3" />
     </svg>
   )
 };

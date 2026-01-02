@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { View, SessionNote, VoiceSettings } from './types';
-import { ICONS, BASE_SYSTEM_INSTRUCTION, SPECIALIST_MODULES } from './constants';
+import { ICONS, BASE_SYSTEM_INSTRUCTION, SPECIALIST_MODULES, AVATARS } from './constants';
 import ChatView from './components/ChatView';
 import LiveVoiceView from './components/LiveVoiceView';
 import SessionNotes from './components/SessionNotes';
@@ -9,12 +9,14 @@ import HomeView from './components/HomeView';
 import SettingsView from './components/SettingsView';
 import AttunementsView from './components/AttunementsView';
 import WelcomeView from './components/WelcomeView';
+import AmbientPlayer from './components/AmbientPlayer';
 
 const App: React.FC = () => {
   const [userName, setUserName] = useState<string>('');
   const [currentView, setCurrentView] = useState<View>(View.WELCOME);
   const [sessionNotes, setSessionNotes] = useState<SessionNote[]>([]);
   const [showCrisisInfo, setShowCrisisInfo] = useState(false);
+  const [showAmbientPanel, setShowAmbientPanel] = useState(false);
   const [activeModuleIds, setActiveModuleIds] = useState<string[]>([]);
   const [voiceSettings, setVoiceSettings] = useState<VoiceSettings>({
     voiceName: 'Kore',
@@ -23,7 +25,9 @@ const App: React.FC = () => {
   });
 
   const dynamicSystemInstruction = useMemo(() => {
-    let instruction = BASE_SYSTEM_INSTRUCTION.replace(/{userName}/g, userName || 'friend');
+    let instruction = BASE_SYSTEM_INSTRUCTION
+      .replace(/{userName}/g, userName || 'friend')
+      .replace(/{accent}/g, voiceSettings.accent);
     activeModuleIds.forEach(id => {
       const mod = SPECIALIST_MODULES.find(m => m.id === id);
       if (mod) {
@@ -31,7 +35,11 @@ const App: React.FC = () => {
       }
     });
     return instruction;
-  }, [activeModuleIds, userName]);
+  }, [activeModuleIds, userName, voiceSettings.accent]);
+
+  const avatarUrl = useMemo(() => {
+    return AVATARS[voiceSettings.gender] || AVATARS.neutral;
+  }, [voiceSettings.gender]);
 
   useEffect(() => {
     const savedName = localStorage.getItem('counselai_username');
@@ -102,19 +110,31 @@ const App: React.FC = () => {
 
   return (
     <div className="flex flex-col h-screen bg-[#fdfaf6] text-[#2c3e50] overflow-hidden aura-bg">
+      {/* Ambient Soundscape Controller */}
+      <AmbientPlayer 
+        isOpen={showAmbientPanel} 
+        onClose={() => setShowAmbientPanel(false)} 
+      />
+
       {/* Header */}
       <header className="bg-[#fdfaf6]/80 backdrop-blur-md border-b border-[#96adb3]/20 px-8 py-6 flex items-center justify-between z-10">
         <div 
           className="flex items-center gap-4 cursor-pointer group"
           onClick={() => setCurrentView(View.HOME)}
         >
-          <div className="w-12 h-12 bg-white border border-[#96adb3]/30 rounded-full flex items-center justify-center text-[#96adb3] font-serif text-2xl shadow-[0_4px_12px_rgba(150,173,179,0.1)] group-hover:border-[#96adb3] transition-all duration-700">C</div>
+          <div className="w-12 h-12 bg-white border border-[#96adb3]/30 rounded-full flex items-center justify-center overflow-hidden shadow-[0_4px_12px_rgba(150,173,179,0.1)] group-hover:border-[#96adb3] transition-all duration-700">
+            <img 
+              src={avatarUrl} 
+              alt="Facilitator Avatar" 
+              className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700"
+            />
+          </div>
           <div className="flex flex-col">
-            <h1 className="text-2xl font-medium text-[#2c3e50] font-serif tracking-widest uppercase">CounselAI</h1>
+            <h1 className="text-2xl font-medium text-[#2c3e50] font-serif tracking-widest uppercase">FacilitatorAI</h1>
             <span className="text-[8px] uppercase tracking-[0.2em] text-[#96adb3] font-bold">In service of {userName}</span>
           </div>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
            {activeModuleIds.length > 0 && (
              <div className="hidden sm:flex items-center gap-2 border border-[#96adb3]/30 px-4 py-1.5 rounded-full text-[10px] tracking-widest font-bold text-[#96adb3] uppercase bg-white">
                 <span className="w-1.5 h-1.5 bg-[#96adb3] rounded-full animate-pulse"></span>
@@ -122,14 +142,23 @@ const App: React.FC = () => {
              </div>
            )}
            <button 
+            onClick={() => setShowAmbientPanel(!showAmbientPanel)}
+            className={`p-2.5 rounded-full transition-all duration-500 ${showAmbientPanel ? 'bg-[#96adb3]/10 text-[#96adb3]' : 'text-[#2c3e50]/40 hover:text-[#96adb3]'}`}
+            title="Atmosphere"
+          >
+            <ICONS.Lotus />
+          </button>
+           <button 
             onClick={() => setCurrentView(View.SETTINGS)}
             className={`p-2.5 rounded-full transition-all duration-500 ${currentView === View.SETTINGS ? 'bg-[#96adb3]/10 text-[#96adb3]' : 'text-[#2c3e50]/40 hover:text-[#96adb3]'}`}
+            title="Settings"
           >
             <ICONS.Settings />
           </button>
            <button 
             onClick={() => setShowCrisisInfo(!showCrisisInfo)}
             className="p-2.5 text-red-500 hover:text-red-600 transition-all"
+            title="Immediate Support"
           >
             <ICONS.Info />
           </button>
@@ -156,9 +185,9 @@ const App: React.FC = () => {
         )}
 
         <div className="h-full w-full max-w-6xl mx-auto p-4 md:p-8 lg:p-12">
-          {currentView === View.HOME && <HomeView setView={setCurrentView} activeModuleIds={activeModuleIds} />}
-          {currentView === View.CHAT && <ChatView onAddNote={addNote} systemInstruction={dynamicSystemInstruction} />}
-          {currentView === View.VOICE && <LiveVoiceView onAddNote={addNote} voiceSettings={voiceSettings} systemInstruction={dynamicSystemInstruction} />}
+          {currentView === View.HOME && <HomeView setView={setCurrentView} activeModuleIds={activeModuleIds} avatarUrl={avatarUrl} />}
+          {currentView === View.CHAT && <ChatView onAddNote={addNote} systemInstruction={dynamicSystemInstruction} avatarUrl={avatarUrl} />}
+          {currentView === View.VOICE && <LiveVoiceView onAddNote={addNote} voiceSettings={voiceSettings} systemInstruction={dynamicSystemInstruction} avatarUrl={avatarUrl} />}
           {currentView === View.NOTES && <SessionNotes notes={sessionNotes} onDelete={deleteNote} onClear={clearAllNotes} />}
           {currentView === View.SETTINGS && (
             <SettingsView 
