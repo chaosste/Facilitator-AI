@@ -13,25 +13,50 @@ export const AMBIENT_TRACKS: AmbientTrack[] = [
     id: 'forest',
     name: 'Ancient Forest',
     icon: '🌲',
-    url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3' // Placeholder: substitute with actual nature loops
+    url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3',
+    description: 'Deep resonance of old growth and rustling leaves.'
   },
   {
     id: 'rain',
     name: 'Gentle Rain',
     icon: '🌧️',
-    url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3'
+    url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3',
+    description: 'A soft pitter-patter to cleanse the mind.'
   },
   {
     id: 'cosmic',
     name: 'Cosmic Drift',
     icon: '✨',
-    url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3'
+    url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3',
+    description: 'Ethereal synths for transcendence and space.'
   },
   {
     id: 'waves',
     name: 'Ocean Breath',
     icon: '🌊',
-    url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
+    url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+    description: 'Rhythmic tides mirroring the flow of life.'
+  },
+  {
+    id: 'chants',
+    name: 'Meditative Chants',
+    icon: '🧘',
+    url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+    description: 'Low frequency drones and harmonic echoes.'
+  },
+  {
+    id: 'brook',
+    name: 'Gentle Brook',
+    icon: '💧',
+    url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+    description: 'Continuous flow of clear water over stones.'
+  },
+  {
+    id: 'thunder',
+    name: 'Distant Thunder',
+    icon: '⛈️',
+    url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
+    description: 'Subdued rumbling for grounded introspection.'
   }
 ];
 

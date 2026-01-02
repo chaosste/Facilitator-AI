@@ -28,6 +28,7 @@ export interface AmbientTrack {
   name: string;
   icon: string;
   url: string;
+  description: string;
 }
 
 export interface ChatMessage {

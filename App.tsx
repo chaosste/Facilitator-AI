@@ -186,7 +186,15 @@ const App: React.FC = () => {
 
         <div className="h-full w-full max-w-6xl mx-auto p-4 md:p-8 lg:p-12">
           {currentView === View.HOME && <HomeView setView={setCurrentView} activeModuleIds={activeModuleIds} avatarUrl={avatarUrl} />}
-          {currentView === View.CHAT && <ChatView onAddNote={addNote} systemInstruction={dynamicSystemInstruction} avatarUrl={avatarUrl} />}
+          {currentView === View.CHAT && (
+            <ChatView 
+              onAddNote={addNote} 
+              systemInstruction={dynamicSystemInstruction} 
+              avatarUrl={avatarUrl}
+              onToggleAmbient={() => setShowAmbientPanel(!showAmbientPanel)}
+              isAmbientOpen={showAmbientPanel}
+            />
+          )}
           {currentView === View.VOICE && <LiveVoiceView onAddNote={addNote} voiceSettings={voiceSettings} systemInstruction={dynamicSystemInstruction} avatarUrl={avatarUrl} />}
           {currentView === View.NOTES && <SessionNotes notes={sessionNotes} onDelete={deleteNote} onClear={clearAllNotes} />}
           {currentView === View.SETTINGS && (

@@ -2,11 +2,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { GoogleGenAI, Type, FunctionDeclaration } from '@google/genai';
 import { ChatMessage, SessionNote } from '../types';
+import { ICONS } from '../constants';
 
 interface ChatViewProps {
   onAddNote: (note: SessionNote) => void;
   systemInstruction: string;
   avatarUrl: string;
+  onToggleAmbient: () => void;
+  isAmbientOpen: boolean;
 }
 
 const writeSessionNoteDeclaration: FunctionDeclaration = {
@@ -33,7 +36,7 @@ const writeSessionNoteDeclaration: FunctionDeclaration = {
   }
 };
 
-const ChatView: React.FC<ChatViewProps> = ({ onAddNote, systemInstruction, avatarUrl }) => {
+const ChatView: React.FC<ChatViewProps> = ({ onAddNote, systemInstruction, avatarUrl, onToggleAmbient, isAmbientOpen }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([
     { role: 'assistant', text: "Welcome to this space. How are you feeling in this moment?", timestamp: new Date() }
   ]);
@@ -88,7 +91,7 @@ const ChatView: React.FC<ChatViewProps> = ({ onAddNote, systemInstruction, avata
   };
 
   return (
-    <div className="flex flex-col h-full rounded-[3rem] overflow-hidden border border-[#96adb3]/10 mystic-glass shadow-xl bg-white/40">
+    <div className="flex flex-col h-full rounded-[3rem] overflow-hidden border border-[#96adb3]/10 mystic-glass shadow-xl bg-white/40 relative">
       <div ref={scrollRef} className="flex-1 overflow-y-auto p-8 space-y-8 scroll-smooth">
         {messages.map((msg, i) => (
           <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-4 duration-1000`}>
@@ -123,7 +126,14 @@ const ChatView: React.FC<ChatViewProps> = ({ onAddNote, systemInstruction, avata
       </div>
 
       <div className="p-6 bg-[#fdfaf6]/80 backdrop-blur-md border-t border-[#96adb3]/10">
-        <div className="flex gap-4 max-w-4xl mx-auto">
+        <div className="flex gap-4 max-w-4xl mx-auto items-center">
+          <button 
+            onClick={onToggleAmbient}
+            className={`p-4 rounded-full transition-all duration-700 ${isAmbientOpen ? 'bg-[#96adb3] text-white' : 'bg-white border border-[#96adb3]/20 text-[#96adb3] hover:border-[#96adb3]'} shadow-sm`}
+            title="Toggle Atmosphere"
+          >
+            <ICONS.Lotus />
+          </button>
           <input 
             type="text"
             value={input}
