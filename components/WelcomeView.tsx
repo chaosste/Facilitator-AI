@@ -19,7 +19,7 @@ const WelcomeView: React.FC<WelcomeViewProps> = ({ onComplete }) => {
       <div className="max-w-md w-full space-y-12">
         <div className="space-y-6">
           <div className="w-20 h-20 bg-white border border-[#96adb3]/30 rounded-full flex items-center justify-center text-[#96adb3] font-serif text-4xl shadow-xl mx-auto">F</div>
-          <h2 className="text-4xl font-serif italic text-[#2c3e50]">Welcome to FacilitatorAI</h2>
+          <h2 className="text-4xl font-serif italic text-[#2c3e50]">Welcome to Facilitator-AI</h2>
           <p className="text-sm text-[#2c3e50]/40 leading-relaxed font-light tracking-widest uppercase">The unreal retreat guru</p>
         </div>
 
@@ -41,7 +41,7 @@ const WelcomeView: React.FC<WelcomeViewProps> = ({ onComplete }) => {
             disabled={!name.trim()}
             className="w-full py-5 bg-[#96adb3] text-white rounded-full font-bold uppercase tracking-[0.3em] text-[10px] hover:bg-[#2c3e50] disabled:opacity-20 transition-all duration-700 shadow-lg active:scale-95"
           >
-            Enter the Clearing
+            Enter the Space
           </button>
         </form>
 

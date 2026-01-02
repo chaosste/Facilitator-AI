@@ -26,7 +26,7 @@ const HomeView: React.FC<HomeViewProps> = ({ setView, activeModuleIds, avatarUrl
           Modular Attunement
         </h4>
         <p className="text-sm text-[#2c3e50]/50 leading-relaxed tracking-wider font-light max-w-xl mx-auto mb-6">
-          Refine the vessel for your unique journey. Attune FacilitatorAI with essences of <strong>Psychedelic Integration</strong>, <strong>Sharing Circles</strong>, or <strong>Harm Reduction</strong>.
+          Refine the vessel for your unique journey. Attune Facilitator-AI with essences of <strong>Psychedelic Integration</strong>, <strong>Sharing Circles</strong>, or <strong>Harm Reduction</strong>.
         </p>
         <div className="inline-flex items-center gap-3 px-6 py-2 rounded-full border border-[#96adb3]/20 text-[10px] uppercase tracking-[0.2em] font-bold text-[#96adb3] group-hover:bg-[#96adb3] group-hover:text-white transition-all duration-700">
           Configure Specialist Essences

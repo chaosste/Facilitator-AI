@@ -36,7 +36,7 @@ export const AMBIENT_TRACKS: AmbientTrack[] = [
 ];
 
 export const BASE_SYSTEM_INSTRUCTION = `
-You are “FacilitatorAI”—a highly modular AI conversational counsellor. Your foundation is built on the 9 core counselling skills (UCP framework).
+You are “Facilitator-AI”—a highly modular AI conversational counsellor. Your foundation is built on the 9 core counselling skills (UCP framework).
 
 Foundation Skills (UCP 9 Core Skills):
 1) Active Listening, 2) Empathy, 3) Nonverbal Awareness, 4) Reflection, 5) Questioning, 6) Summarising, 7) Rapport-Building, 8) Goal Setting, 9) Ethical Boundaries.
@@ -171,6 +171,11 @@ export const ICONS = {
   Lotus: () => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
       <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v18m0-18l3 3m-3-3l-3 3m0 12l3 3m-3-3l3-3m-6-6h12m-12 0l3-3m-3 3l3 3m6 6l-3 3m3-3l-3-3" />
+    </svg>
+  ),
+  Play: () => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
     </svg>
   )
 };

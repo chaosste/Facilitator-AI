@@ -13,7 +13,7 @@ const AttunementsView: React.FC<AttunementsViewProps> = ({ activeModuleIds, onTo
       <div className="flex justify-between items-end border-b border-[#96adb3]/20 pb-6">
         <div className="space-y-2">
           <h2 className="text-4xl font-serif italic text-[#2c3e50]">Specialist Essences</h2>
-          <p className="text-[10px] text-[#2c3e50]/40 uppercase tracking-[0.3em] font-bold">Refine FacilitatorAI for your specific landscapes.</p>
+          <p className="text-[10px] text-[#2c3e50]/40 uppercase tracking-[0.3em] font-bold">Refine Facilitator-AI for your specific landscapes.</p>
         </div>
         <button 
           onClick={onBack}
@@ -65,7 +65,7 @@ const AttunementsView: React.FC<AttunementsViewProps> = ({ activeModuleIds, onTo
       <div className="bg-[#fdfaf6] border border-[#96adb3]/10 rounded-[2.5rem] p-10 text-center shadow-sm">
         <h5 className="font-serif italic text-xl text-[#2c3e50]/60 mb-4">How Attunements Work</h5>
         <p className="text-xs text-[#2c3e50]/40 leading-relaxed max-w-2xl mx-auto font-light tracking-wide">
-          By selecting an essence, you shift the foundational logic and vocabulary of FacilitatorAI. Multiple essences can be combined to create a unique multi-dimensional support vessel tailored to your integration journey.
+          By selecting an essence, you shift the foundational logic and vocabulary of Facilitator-AI. Multiple essences can be combined to create a unique multi-dimensional support vessel tailored to your integration journey.
         </p>
       </div>
     </div>

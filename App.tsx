@@ -130,8 +130,8 @@ const App: React.FC = () => {
             />
           </div>
           <div className="flex flex-col">
-            <h1 className="text-2xl font-medium text-[#2c3e50] font-serif tracking-widest uppercase">FacilitatorAI</h1>
-            <span className="text-[8px] uppercase tracking-[0.2em] text-[#96adb3] font-bold">In service of {userName}</span>
+            <h1 className="text-2xl font-medium text-[#2c3e50] font-serif tracking-widest uppercase">Facilitator-AI</h1>
+            <span className="text-[8px] uppercase tracking-[0.2em] text-[#96adb3] font-bold">Sitting with: {userName}</span>
           </div>
         </div>
         <div className="flex items-center gap-2 sm:gap-4">
@@ -157,10 +157,10 @@ const App: React.FC = () => {
           </button>
            <button 
             onClick={() => setShowCrisisInfo(!showCrisisInfo)}
-            className="p-2.5 text-red-500 hover:text-red-600 transition-all"
-            title="Immediate Support"
+            className="p-2.5 text-red-500 hover:text-red-600 transition-all font-black text-[11px] tracking-widest"
+            title="Help in a crisis"
           >
-            <ICONS.Info />
+            HELP!
           </button>
         </div>
       </header>
