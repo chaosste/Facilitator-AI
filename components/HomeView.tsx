@@ -12,15 +12,34 @@ const HomeView: React.FC<HomeViewProps> = ({ setView, activeModuleIds }) => {
   const activeModules = SPECIALIST_MODULES.filter(m => activeModuleIds.includes(m.id));
 
   return (
-    <div className="h-full flex flex-col justify-center items-center text-center space-y-12 animate-in fade-in zoom-in duration-1000 overflow-y-auto pt-8 pb-8">
-      <div className="max-w-3xl px-6 space-y-6">
+    <div className="h-full flex flex-col items-center space-y-12 animate-in fade-in zoom-in duration-1000 overflow-y-auto pt-4 pb-8">
+      {/* Modular Attunement Panel (Now at Top) */}
+      <button 
+        onClick={() => setView(View.ATTUNEMENTS)}
+        className="w-full max-w-4xl bg-white/40 border border-[#96adb3]/20 hover:border-[#96adb3]/50 rounded-[2.5rem] p-10 text-center transition-all duration-1000 group hover:shadow-2xl duck-egg-glow"
+      >
+        <div className="w-12 h-12 mx-auto mb-6 text-[#96adb3]/40 group-hover:text-[#96adb3] transition-all duration-700">
+          <ICONS.Modules />
+        </div>
+        <h4 className="font-serif italic text-3xl text-[#96adb3] mb-4 group-hover:scale-105 transition-transform duration-700">
+          Modular Attunement
+        </h4>
+        <p className="text-sm text-[#2c3e50]/50 leading-relaxed tracking-wider font-light max-w-xl mx-auto mb-6">
+          Refine the vessel for your unique journey. Attune CounselAI with essences of <strong>Psychedelic Integration</strong>, <strong>Sharing Circles</strong>, or <strong>Harm Reduction</strong>.
+        </p>
+        <div className="inline-flex items-center gap-3 px-6 py-2 rounded-full border border-[#96adb3]/20 text-[10px] uppercase tracking-[0.2em] font-bold text-[#96adb3] group-hover:bg-[#96adb3] group-hover:text-white transition-all duration-700">
+          Configure Specialist Essences
+        </div>
+      </button>
+
+      <div className="max-w-3xl px-6 text-center space-y-6">
         <h2 className="text-5xl md:text-7xl font-normal text-[#2c3e50] font-serif italic tracking-tight mb-4">
           The Internal Clearing
         </h2>
         <p className="text-lg text-[#2c3e50]/60 mb-8 leading-relaxed font-light tracking-[0.05em] max-w-xl mx-auto">
           A sacred vessel for integration, grounded in <span className="text-[#96adb3] border-b border-[#96adb3]/30 italic">UCP Core Skills</span>
           {activeModules.length > 0 && (
-            <>, refined by your personal <span className="text-[#96adb3] font-medium">{activeModules.length} attunements</span></>
+            <>, refined by your personal <span className="text-[#96adb3] font-medium">{activeModules.length} active essences</span></>
           )}.
         </p>
 
@@ -57,18 +76,6 @@ const HomeView: React.FC<HomeViewProps> = ({ setView, activeModuleIds }) => {
           <h3 className="text-2xl font-serif text-[#2c3e50] mb-3 tracking-wide">Sacred Communion</h3>
           <p className="text-[#96adb3]/60 text-xs tracking-widest uppercase font-bold">Real-time Voice Presence</p>
         </button>
-      </div>
-
-      <div className="mt-16 bg-white/40 border border-[#96adb3]/10 rounded-[2.5rem] p-10 text-center max-w-2xl mx-6 shadow-sm">
-        <div className="w-10 h-10 mx-auto mb-6 text-[#96adb3]/30">
-          <ICONS.Modules />
-        </div>
-        <h4 className="font-serif italic text-2xl text-[#96adb3] mb-4">
-          Modular Attunement
-        </h4>
-        <p className="text-sm text-[#2c3e50]/50 leading-relaxed tracking-wider font-light">
-          CounselAI adapts to your journey. Attune the vessel in Settings with essences of <strong>Psychedelic Integration</strong>, <strong>Sharing Circles</strong>, or <strong>Harm Reduction</strong> to refine my support for your internal landscapes.
-        </p>
       </div>
     </div>
   );

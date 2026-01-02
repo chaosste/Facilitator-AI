@@ -9,6 +9,8 @@ interface LiveVoiceViewProps {
   systemInstruction: string;
 }
 
+const BELL_URL = 'https://storage.cloud.google.com/ai-studio-bucket-572556903588-us-west1/services/self-test-images/Tibetan%20Singing%20Bowl%20Sounds%20-%20OM.mp3';
+
 const writeSessionNoteDeclaration: FunctionDeclaration = {
   name: 'writesessionnote',
   parameters: {
@@ -33,6 +35,15 @@ const writeSessionNoteDeclaration: FunctionDeclaration = {
   }
 };
 
+const playBellDeclaration: FunctionDeclaration = {
+  name: 'play_bell',
+  parameters: {
+    type: Type.OBJECT,
+    description: 'Rings the Tibetan bell to signify the end of a share duration.',
+    properties: {}
+  }
+};
+
 const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({ onAddNote, voiceSettings, systemInstruction }) => {
   const [isActive, setIsActive] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
@@ -45,6 +56,16 @@ const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({ onAddNote, voiceSettings,
   const sourcesRef = useRef<Set<AudioBufferSourceNode>>(new Set());
   const sessionRef = useRef<any>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const bellAudioRef = useRef<HTMLAudioElement | null>(null);
+  const lastInteractionTimeRef = useRef<number>(Date.now());
+  const silenceIntervalRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    bellAudioRef.current = new Audio(BELL_URL);
+    return () => {
+      if (silenceIntervalRef.current) window.clearInterval(silenceIntervalRef.current);
+    };
+  }, []);
 
   const decode = (base64: string) => {
     const binaryString = atob(base64);
@@ -83,8 +104,22 @@ const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({ onAddNote, voiceSettings,
     return { data: encode(new Uint8Array(int16.buffer)), mimeType: 'audio/pcm;rate=16000' };
   };
 
+  const monitorSilence = useCallback(() => {
+    if (!isActive) return;
+    const elapsed = Date.now() - lastInteractionTimeRef.current;
+    if (elapsed > 10000) {
+      if (sessionRef.current) {
+        sessionRef.current.sendRealtimeInput({
+          text: "[Facilitator Note: 10 seconds of silence. Transition to closing the circle smoothly, following the gentle pace instructions.]"
+        });
+        lastInteractionTimeRef.current = Date.now();
+      }
+    }
+  }, [isActive]);
+
   const startSession = async () => {
     setIsConnecting(true);
+    lastInteractionTimeRef.current = Date.now();
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
@@ -105,7 +140,13 @@ const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({ onAddNote, voiceSettings,
             scriptProcessor.onaudioprocess = (e) => {
               const inputData = e.inputBuffer.getChannelData(0);
               let sum = 0;
-              for(let i=0; i<inputData.length; i++) sum += inputData[i] * inputData[i];
+              let peak = 0;
+              for(let i=0; i<inputData.length; i++) {
+                sum += inputData[i] * inputData[i];
+                if (Math.abs(inputData[i]) > 0.05) peak = Math.abs(inputData[i]);
+              }
+              if (peak > 0.05) lastInteractionTimeRef.current = Date.now();
+
               const rms = Math.sqrt(sum / inputData.length);
               setVisualizerScale(1 + rms * 5);
               const pcmBlob = createBlob(inputData);
@@ -113,18 +154,30 @@ const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({ onAddNote, voiceSettings,
             };
             source.connect(scriptProcessor);
             scriptProcessor.connect(inputCtx.destination);
+
+            silenceIntervalRef.current = window.setInterval(monitorSilence, 1000);
           },
           onmessage: async (message: LiveServerMessage) => {
+            lastInteractionTimeRef.current = Date.now();
             if (message.serverContent?.outputTranscription) {
               setTranscription(prev => prev + ' ' + message.serverContent?.outputTranscription?.text);
             }
             if (message.serverContent?.turnComplete) { setTranscription(''); }
+            
             if (message.toolCall) {
               for (const fc of message.toolCall.functionCalls) {
                 if (fc.name === 'writesessionnote') {
                   onAddNote(fc.args.json as SessionNote);
                   sessionPromise.then(session => session.sendToolResponse({
-                    functionResponses: { id: fc.id, name: fc.name, response: { result: "Note captured." } }
+                    functionResponses: { id: fc.id, name: fc.name, response: { result: "Note archived." } }
+                  }));
+                } else if (fc.name === 'play_bell') {
+                  if (bellAudioRef.current) {
+                    bellAudioRef.current.currentTime = 0;
+                    bellAudioRef.current.play().catch(e => console.error("Bell error", e));
+                  }
+                  sessionPromise.then(session => session.sendToolResponse({
+                    functionResponses: { id: fc.id, name: fc.name, response: { result: "Bell rung." } }
                   }));
                 }
               }
@@ -155,7 +208,7 @@ const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({ onAddNote, voiceSettings,
           responseModalities: [Modality.AUDIO],
           systemInstruction: systemInstruction,
           speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: voiceSettings.voiceName } } },
-          tools: [{ functionDeclarations: [writeSessionNoteDeclaration] }],
+          tools: [{ functionDeclarations: [writeSessionNoteDeclaration, playBellDeclaration] }],
           outputAudioTranscription: {}
         }
       });
@@ -164,6 +217,7 @@ const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({ onAddNote, voiceSettings,
   };
 
   const stopSession = useCallback(() => {
+    if (silenceIntervalRef.current) window.clearInterval(silenceIntervalRef.current);
     if (sessionRef.current) {
       try { sessionRef.current.close(); } catch(e) {}
       sessionRef.current = null;
@@ -189,11 +243,10 @@ const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({ onAddNote, voiceSettings,
     <div className="h-full flex flex-col justify-center items-center space-y-16 animate-in fade-in duration-1000">
       <div className="text-center space-y-3">
         <h2 className="text-4xl font-serif italic text-[#2c3e50] tracking-tight">Sacred Communion</h2>
-        <p className="text-[#96adb3] text-[10px] uppercase tracking-[0.3em] font-bold tracking-widest">Auditory Vessel: {voiceSettings.voiceName}</p>
+        <p className="text-[#96adb3] text-[10px] uppercase tracking-[0.3em] font-bold tracking-widest">Presence: {voiceSettings.voiceName}</p>
       </div>
 
       <div className="relative flex items-center justify-center">
-        {/* Glow rings */}
         <div className="absolute w-64 h-64 bg-[#96adb3]/5 rounded-full blur-3xl transition-transform duration-300" style={{ transform: `scale(${visualizerScale * 1.8})` }}></div>
         <div className="absolute w-48 h-48 border border-[#96adb3]/20 rounded-full transition-transform duration-200" style={{ transform: `scale(${visualizerScale})` }}></div>
         
@@ -209,7 +262,7 @@ const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({ onAddNote, voiceSettings,
           {isConnecting ? (
             <span className="text-[10px] uppercase tracking-[0.2em] font-bold animate-pulse text-[#96adb3]">Aligning...</span>
           ) : isActive ? (
-            <span className="text-[10px] uppercase tracking-[0.2em] font-bold">Depart Session</span>
+            <span className="text-[10px] uppercase tracking-[0.2em] font-bold">Depart</span>
           ) : (
             <span className="text-[10px] uppercase tracking-[0.2em] font-bold">Commence</span>
           )}
@@ -219,7 +272,7 @@ const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({ onAddNote, voiceSettings,
       <div className="h-24 flex items-center justify-center">
         {isActive && (
           <div className="max-w-md w-full text-center space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-1000 px-6">
-             <p className="text-[#2c3e50]/50 text-sm font-light italic tracking-widest leading-relaxed">{transcription || "The vessel is open. Speak your truth..."}</p>
+             <p className="text-[#2c3e50]/50 text-sm font-light italic tracking-widest leading-relaxed">{transcription || "Listening deeply..."}</p>
           </div>
         )}
       </div>

@@ -4,7 +4,9 @@ export enum View {
   VOICE = 'VOICE',
   NOTES = 'NOTES',
   HOME = 'HOME',
-  SETTINGS = 'SETTINGS'
+  SETTINGS = 'SETTINGS',
+  ATTUNEMENTS = 'ATTUNEMENTS',
+  WELCOME = 'WELCOME'
 }
 
 export interface VoiceSettings {

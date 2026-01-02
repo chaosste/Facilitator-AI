@@ -7,9 +7,12 @@ import LiveVoiceView from './components/LiveVoiceView';
 import SessionNotes from './components/SessionNotes';
 import HomeView from './components/HomeView';
 import SettingsView from './components/SettingsView';
+import AttunementsView from './components/AttunementsView';
+import WelcomeView from './components/WelcomeView';
 
 const App: React.FC = () => {
-  const [currentView, setCurrentView] = useState<View>(View.HOME);
+  const [userName, setUserName] = useState<string>('');
+  const [currentView, setCurrentView] = useState<View>(View.WELCOME);
   const [sessionNotes, setSessionNotes] = useState<SessionNote[]>([]);
   const [showCrisisInfo, setShowCrisisInfo] = useState(false);
   const [activeModuleIds, setActiveModuleIds] = useState<string[]>([]);
@@ -20,17 +23,23 @@ const App: React.FC = () => {
   });
 
   const dynamicSystemInstruction = useMemo(() => {
-    let instruction = BASE_SYSTEM_INSTRUCTION;
+    let instruction = BASE_SYSTEM_INSTRUCTION.replace(/{userName}/g, userName || 'friend');
     activeModuleIds.forEach(id => {
       const mod = SPECIALIST_MODULES.find(m => m.id === id);
       if (mod) {
-        instruction += `\n${mod.systemInstruction}`;
+        instruction += `\n${mod.systemInstruction.replace(/{userName}/g, userName || 'friend')}`;
       }
     });
     return instruction;
-  }, [activeModuleIds]);
+  }, [activeModuleIds, userName]);
 
   useEffect(() => {
+    const savedName = localStorage.getItem('counselai_username');
+    if (savedName) {
+      setUserName(savedName);
+      setCurrentView(View.HOME);
+    }
+
     const savedNotes = localStorage.getItem('counselai_notes');
     if (savedNotes) {
       try {
@@ -52,6 +61,10 @@ const App: React.FC = () => {
       } catch (e) { console.error("Failed to parse modules", e); }
     }
   }, []);
+
+  useEffect(() => {
+    if (userName) localStorage.setItem('counselai_username', userName);
+  }, [userName]);
 
   useEffect(() => {
     localStorage.setItem('counselai_notes', JSON.stringify(sessionNotes));
@@ -83,6 +96,10 @@ const App: React.FC = () => {
     }
   };
 
+  if (currentView === View.WELCOME) {
+    return <WelcomeView onComplete={(name) => { setUserName(name); setCurrentView(View.HOME); }} />;
+  }
+
   return (
     <div className="flex flex-col h-screen bg-[#fdfaf6] text-[#2c3e50] overflow-hidden aura-bg">
       {/* Header */}
@@ -92,7 +109,10 @@ const App: React.FC = () => {
           onClick={() => setCurrentView(View.HOME)}
         >
           <div className="w-12 h-12 bg-white border border-[#96adb3]/30 rounded-full flex items-center justify-center text-[#96adb3] font-serif text-2xl shadow-[0_4px_12px_rgba(150,173,179,0.1)] group-hover:border-[#96adb3] transition-all duration-700">C</div>
-          <h1 className="text-2xl font-medium text-[#2c3e50] font-serif tracking-widest uppercase">CounselAI</h1>
+          <div className="flex flex-col">
+            <h1 className="text-2xl font-medium text-[#2c3e50] font-serif tracking-widest uppercase">CounselAI</h1>
+            <span className="text-[8px] uppercase tracking-[0.2em] text-[#96adb3] font-bold">In service of {userName}</span>
+          </div>
         </div>
         <div className="flex items-center gap-4">
            {activeModuleIds.length > 0 && (
@@ -144,8 +164,14 @@ const App: React.FC = () => {
             <SettingsView 
               settings={voiceSettings} 
               onUpdate={setVoiceSettings} 
-              activeModuleIds={activeModuleIds} 
-              onToggleModule={toggleModule} 
+              onResetName={() => setCurrentView(View.WELCOME)}
+            />
+          )}
+          {currentView === View.ATTUNEMENTS && (
+            <AttunementsView
+              activeModuleIds={activeModuleIds}
+              onToggleModule={toggleModule}
+              onBack={() => setCurrentView(View.HOME)}
             />
           )}
         </div>
