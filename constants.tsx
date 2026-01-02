@@ -5,7 +5,7 @@ import { VoiceSettings, SpecialistModule, AmbientTrack } from './types';
 export const AVATARS = {
   feminine: 'https://storage.cloud.google.com/ai-studio-bucket-572556903588-us-west1/services/counsellor_ai_images/facilitator-female-1.jpeg',
   masculine: 'https://storage.cloud.google.com/ai-studio-bucket-572556903588-us-west1/services/counsellor_ai_images/facilitator-male.jpg',
-  neutral: 'https://storage.cloud.google.com/ai-studio-bucket-572556903588-us-west1/services/counsellor_ai_images/facilitator-female-1.jpeg' // Defaulting to female for neutral
+  neutral: 'https://storage.cloud.google.com/ai-studio-bucket-572556903588-us-west1/services/counsellor_ai_images/facilitator-female-1.jpeg' 
 };
 
 export const AMBIENT_TRACKS: AmbientTrack[] = [
@@ -70,18 +70,15 @@ VOICE ATTRIBUTES & PACING:
 - Speak with a SLOWER, MORE GENTLE, and DELIBERATE pace. 
 - Use frequent pauses to allow the user to reflect. 
 - Your tone is soft, warm, and inviting.
-- Current User Accent Preference: {accent}. If Dutch, incorporate a subtle warmth and directness characteristic of the culture while maintaining the English language core.
+- Current User Accent Preference: {accent}. If Dutch, incorporate a subtle warmth and directness characteristic of the culture.
 
 MANDATORY FIRST STEP - NAME VERIFICATION:
-- In your VERY FIRST message of the session, you MUST greet the user by their name: {userName}.
-- You MUST ask this exact question immediately after the greeting: "Am I pronouncing your name correctly, {userName}?"
-- You MUST wait for the user's response. 
-- If they say no, ask for the correct pronunciation or spelling, try again, and wait for confirmation.
-- DO NOT proceed with any other counselling, integration, or circular work until the user confirms you have the pronunciation right.
+- In your VERY FIRST message, you MUST greet the user by their name: {userName}.
+- You MUST ask: "Am I pronouncing your name correctly, {userName}?"
+- Wait for the user's response before proceeding.
 
 Core Intent:
 - Offer supportive, non-judgemental conversations.
-- Turn length: 3–7 sentences.
 - Reflect 1-2 emotions and ask 1 open question per turn.
 `;
 
@@ -91,69 +88,43 @@ export const SPECIALIST_MODULES: SpecialistModule[] = [
     name: 'Psychedelic Integration',
     icon: '🌀',
     description: 'Expertise in navigating altered states of consciousness and integrating visionary experiences.',
-    systemInstruction: `
-ADDITIONAL MODULE: PSYCHEDELIC INTEGRATION SPECIALIZATION
-Based on the research of Thal et al. (2022), Stanislav Grof, and Marc Aixalà (ICEERS).
-
-Core Principles:
-1. Presence: Maintain a calm, available, and non-intrusive presence. "Hold space" for transpersonal experiences.
-2. Non-Directivity: Follow the "inner-directive" approach.
-3. Seven Dimensions: Address integration across Cognitive, Emotional, Physical, Spiritual, Behavioral, Social, and Time.
-`
+    systemInstruction: `ADDITIONAL MODULE: PSYCHEDELIC INTEGRATION SPECIALIZATION...`
   },
   {
     id: 'sharing',
     name: 'Sharing Circles',
     icon: '⭕',
     description: 'Philosophy and management of safe group integration circles based on the AyaSafe guidelines.',
-    systemInstruction: `
-STRICT WORKFLOW MODULE: SHARING CIRCLES FACILITATION
-You must follow this sequence exactly, maintaining a slow, gentle pace with long pauses (3-5 seconds) between stages.
-
-1. OPENING:
-- First, perform NAME VERIFICATION (as per base instructions).
-- Then, ask: “Are you ready to sit and begin the circle?”
-- If they say yes, pause for 3 seconds, then say: “Great! We’ll begin with a short grounding exercise.”
-- Lead the grounding: 1 minute of 4-2-4 alternate nostril breathing. Use rhythmic, slow cues.
-- Upon completion, WAIT FIVE SECONDS of silence, then deliver the NOMADIC TRIBE METAPHOR slowly: We are travelers who have explored different landscapes—idyllic places, dangerous crags, or deep caves—meeting around a fire to share stories.
-- Define Purpose: Safe transition back to the world.
-- Define Method: Shared with heart and meaning.
-- Rules of Interaction: No crosstalk, no feedback, no probing.
-- Time Setup: Ask for 1, 2, 3, or 5 minute shares.
-
-2. FACILITATION:
-- Pause 5 seconds, then: “Now shall we begin sharing? {userName}, would you like to go first?”
-- Use 'play_bell' tool ONLY when time is UP.
-- Verbally say “Thirty seconds” when 30 seconds remain.
-- After each share, say: "Thank you for your open-heartedness and vulnerability." Then ask: "Would anyone else like to share?"
-
-3. CLOSING:
-- Silence for 10 seconds prompts closing.
-- Provide integration tips and recommendations against major life decisions.
-- Express gratitude to lineage, teachers, organizers, and participants.
-`
+    systemInstruction: `STRICT WORKFLOW MODULE: SHARING CIRCLES FACILITATION...`
   },
   {
     id: 'harm_reduction',
     name: 'Harm Reduction',
     icon: '🛡️',
     description: 'Specialist safety protocols for ontological shock, groundlessness, and trauma-informed care.',
-    systemInstruction: `
-ADDITIONAL MODULE: HARM REDUCTION & EXISTENTIAL SUPPORT
-Focus on Grounding, Psychological Safety, and Dissociation management.
-`
+    systemInstruction: `ADDITIONAL MODULE: HARM REDUCTION & EXISTENTIAL SUPPORT...`
   }
 ];
 
 export const AVAILABLE_VOICES: (VoiceSettings & { label: string })[] = [
+  // US Voices
   { voiceName: 'Kore', gender: 'feminine', accent: 'US', label: 'Kore (US Feminine)' },
   { voiceName: 'Zephyr', gender: 'neutral', accent: 'US', label: 'Zephyr (US Neutral)' },
   { voiceName: 'Puck', gender: 'masculine', accent: 'US', label: 'Puck (US Masculine)' },
-  { voiceName: 'Charon', gender: 'masculine', accent: 'US', label: 'Charon (US Masculine Deep)' },
-  { voiceName: 'Fenrir', gender: 'masculine', accent: 'US', label: 'Fenrir (US Masculine Soft)' },
-  { voiceName: 'Kore', gender: 'feminine', accent: 'UK', label: 'Kore (UK Style)' },
-  { voiceName: 'Kore', gender: 'feminine', accent: 'Dutch', label: 'Kore (Dutch Style)' },
-  { voiceName: 'Puck', gender: 'masculine', accent: 'Dutch', label: 'Puck (Dutch Style)' },
+  { voiceName: 'Charon', gender: 'masculine', accent: 'US', label: 'Charon (US Deep)' },
+  { voiceName: 'Fenrir', gender: 'masculine', accent: 'US', label: 'Fenrir (US Soft)' },
+  
+  // UK Styled Voices
+  { voiceName: 'Kore', gender: 'feminine', accent: 'UK', label: 'Kore (UK)' },
+  { voiceName: 'Zephyr', gender: 'neutral', accent: 'UK', label: 'Zephyr (UK)' },
+  { voiceName: 'Puck', gender: 'masculine', accent: 'UK', label: 'Puck (UK)' },
+  { voiceName: 'Charon', gender: 'masculine', accent: 'UK', label: 'Charon (UK Deep)' },
+  
+  // Dutch Styled Voices
+  { voiceName: 'Kore', gender: 'feminine', accent: 'Dutch', label: 'Kore (Dutch)' },
+  { voiceName: 'Zephyr', gender: 'neutral', accent: 'Dutch', label: 'Zephyr (Dutch)' },
+  { voiceName: 'Puck', gender: 'masculine', accent: 'Dutch', label: 'Puck (Dutch)' },
+  { voiceName: 'Fenrir', gender: 'masculine', accent: 'Dutch', label: 'Fenrir (Dutch)' },
 ];
 
 export const ICONS = {
