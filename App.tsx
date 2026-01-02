@@ -26,8 +26,7 @@ const App: React.FC = () => {
 
   const dynamicSystemInstruction = useMemo(() => {
     let instruction = BASE_SYSTEM_INSTRUCTION
-      .replace(/{userName}/g, userName || 'friend')
-      .replace(/{accent}/g, voiceSettings.accent);
+      .replace(/{userName}/g, userName || 'friend');
     activeModuleIds.forEach(id => {
       const mod = SPECIALIST_MODULES.find(m => m.id === id);
       if (mod) {
@@ -35,10 +34,10 @@ const App: React.FC = () => {
       }
     });
     return instruction;
-  }, [activeModuleIds, userName, voiceSettings.accent]);
+  }, [activeModuleIds, userName]);
 
   const avatarUrl = useMemo(() => {
-    return AVATARS[voiceSettings.gender] || AVATARS.neutral;
+    return AVATARS[voiceSettings.gender];
   }, [voiceSettings.gender]);
 
   useEffect(() => {
@@ -109,25 +108,26 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-[#fdfaf6] text-[#2c3e50] overflow-hidden aura-bg">
-      {/* Ambient Soundscape Controller */}
-      <AmbientPlayer 
-        isOpen={showAmbientPanel} 
-        onClose={() => setShowAmbientPanel(false)} 
-      />
+    <div className="flex flex-col h-screen bg-[#fdfaf6] text-[#2c3e50] overflow-hidden aura-bg relative">
+      <AmbientPlayer isOpen={showAmbientPanel} onClose={() => setShowAmbientPanel(false)} />
 
-      {/* Header */}
+      {/* Buy Me a Coffee Button - Discrete Floating Action */}
+      <a 
+        href="https://buymeacoffee.com/stevebeale" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="fixed bottom-28 right-8 z-[60] bg-white/60 backdrop-blur-md border border-[#96adb3]/20 p-3 rounded-full shadow-lg hover:shadow-xl hover:border-[#96adb3]/50 transition-all duration-500 group flex items-center gap-3 overflow-hidden max-w-[48px] hover:max-w-[180px]"
+      >
+        <span className="text-lg">☕</span>
+        <span className="text-[9px] font-black uppercase tracking-[0.2em] text-[#96adb3] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+          Support this vessel
+        </span>
+      </a>
+
       <header className="bg-[#fdfaf6]/80 backdrop-blur-md border-b border-[#96adb3]/20 px-8 py-6 flex items-center justify-between z-10">
-        <div 
-          className="flex items-center gap-4 cursor-pointer group"
-          onClick={() => setCurrentView(View.HOME)}
-        >
+        <div className="flex items-center gap-4 cursor-pointer group" onClick={() => setCurrentView(View.HOME)}>
           <div className="w-12 h-12 bg-white border border-[#96adb3]/30 rounded-full flex items-center justify-center overflow-hidden shadow-[0_4px_12px_rgba(150,173,179,0.1)] group-hover:border-[#96adb3] transition-all duration-700">
-            <img 
-              src={avatarUrl} 
-              alt="Facilitator Avatar" 
-              className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700"
-            />
+            <img src={avatarUrl} alt="Facilitator Avatar" className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700" />
           </div>
           <div className="flex flex-col">
             <h1 className="text-2xl font-medium text-[#2c3e50] font-serif tracking-widest uppercase">Facilitator-AI</h1>
@@ -141,31 +141,18 @@ const App: React.FC = () => {
                 {activeModuleIds.length} Attunements
              </div>
            )}
-           <button 
-            onClick={() => setShowAmbientPanel(!showAmbientPanel)}
-            className={`p-2.5 rounded-full transition-all duration-500 ${showAmbientPanel ? 'bg-[#96adb3]/10 text-[#96adb3]' : 'text-[#2c3e50]/40 hover:text-[#96adb3]'}`}
-            title="Atmosphere"
-          >
+           <button onClick={() => setShowAmbientPanel(!showAmbientPanel)} className={`p-2.5 rounded-full transition-all duration-500 ${showAmbientPanel ? 'bg-[#96adb3]/10 text-[#96adb3]' : 'text-[#2c3e50]/40 hover:text-[#96adb3]'}`} title="Atmosphere">
             <ICONS.Lotus />
           </button>
-           <button 
-            onClick={() => setCurrentView(View.SETTINGS)}
-            className={`p-2.5 rounded-full transition-all duration-500 ${currentView === View.SETTINGS ? 'bg-[#96adb3]/10 text-[#96adb3]' : 'text-[#2c3e50]/40 hover:text-[#96adb3]'}`}
-            title="Settings"
-          >
+           <button onClick={() => setCurrentView(View.SETTINGS)} className={`p-2.5 rounded-full transition-all duration-500 ${currentView === View.SETTINGS ? 'bg-[#96adb3]/10 text-[#96adb3]' : 'text-[#2c3e50]/40 hover:text-[#96adb3]'}`} title="Settings">
             <ICONS.Settings />
           </button>
-           <button 
-            onClick={() => setShowCrisisInfo(!showCrisisInfo)}
-            className="p-2.5 text-red-500 hover:text-red-600 transition-all font-black text-[11px] tracking-widest"
-            title="Help in a crisis"
-          >
+           <button onClick={() => setShowCrisisInfo(!showCrisisInfo)} className="p-2.5 text-red-500 hover:text-red-600 transition-all font-black text-[11px] tracking-widest" title="Help in a crisis">
             HELP!
           </button>
         </div>
       </header>
 
-      {/* Main Area */}
       <main className="flex-1 overflow-hidden relative">
         {showCrisisInfo && (
           <div className="absolute inset-x-0 top-0 bg-[#fff5f5] border-b border-red-100 text-red-700 p-6 z-50 animate-in slide-in-from-top duration-700 flex justify-between items-start shadow-xl backdrop-blur-xl">
@@ -173,13 +160,11 @@ const App: React.FC = () => {
               <ICONS.Info />
               <div className="space-y-3">
                 <p className="font-serif italic text-xl text-red-900">Immediate Support</p>
-                <p className="text-sm opacity-80 leading-relaxed tracking-wide">If you are in danger, please contact emergency services. Text HOME to 741741 or call 988.</p>
+                <p className="text-sm opacity-80 leading-relaxed tracking-wide">If you are in danger, contact emergency services. Text HOME to 741741 or call 988.</p>
               </div>
             </div>
             <button onClick={() => setShowCrisisInfo(false)} className="p-2 hover:bg-red-100 rounded-full transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="w-6 h-6">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
           </div>
         )}
@@ -197,45 +182,41 @@ const App: React.FC = () => {
           )}
           {currentView === View.VOICE && <LiveVoiceView onAddNote={addNote} voiceSettings={voiceSettings} systemInstruction={dynamicSystemInstruction} avatarUrl={avatarUrl} />}
           {currentView === View.NOTES && <SessionNotes notes={sessionNotes} onDelete={deleteNote} onClear={clearAllNotes} />}
-          {currentView === View.SETTINGS && (
-            <SettingsView 
-              settings={voiceSettings} 
-              onUpdate={setVoiceSettings} 
-              onResetName={() => setCurrentView(View.WELCOME)}
-            />
-          )}
-          {currentView === View.ATTUNEMENTS && (
-            <AttunementsView
-              activeModuleIds={activeModuleIds}
-              onToggleModule={toggleModule}
-              onBack={() => setCurrentView(View.HOME)}
-            />
-          )}
+          {currentView === View.SETTINGS && <SettingsView settings={voiceSettings} onUpdate={setVoiceSettings} onResetName={() => setCurrentView(View.WELCOME)} />}
+          {currentView === View.ATTUNEMENTS && <AttunementsView activeModuleIds={activeModuleIds} onToggleModule={toggleModule} onBack={() => setCurrentView(View.HOME)} />}
         </div>
       </main>
 
-      {/* Navigation */}
-      <nav className="bg-white/80 backdrop-blur-md border-t border-[#96adb3]/10 py-6 px-10 flex justify-around items-center md:justify-center md:gap-24">
-        <NavButton active={currentView === View.HOME} onClick={() => setCurrentView(View.HOME)} icon={<ICONS.Home />} label="Home" />
-        <NavButton active={currentView === View.CHAT} onClick={() => setCurrentView(View.CHAT)} icon={<ICONS.Chat />} label="Dialogue" />
-        <NavButton active={currentView === View.VOICE} onClick={() => setCurrentView(View.VOICE)} icon={<ICONS.Mic />} label="Communion" />
-        <NavButton active={currentView === View.NOTES} onClick={() => setCurrentView(View.NOTES)} icon={<ICONS.Note />} label="Journal" />
-      </nav>
+      {/* Navigation & Footer Container */}
+      <footer className="bg-white/80 backdrop-blur-md border-t border-[#96adb3]/10 py-4 flex flex-col items-center gap-4">
+        <nav className="px-10 flex justify-around items-center w-full md:justify-center md:gap-24">
+          <NavButton active={currentView === View.HOME} onClick={() => setCurrentView(View.HOME)} icon={<ICONS.Home />} label="Home" />
+          <NavButton active={currentView === View.CHAT} onClick={() => setCurrentView(View.CHAT)} icon={<ICONS.Chat />} label="Dialogue" />
+          <NavButton active={currentView === View.VOICE} onClick={() => setCurrentView(View.VOICE)} icon={<ICONS.Mic />} label="Communion" />
+          <NavButton active={currentView === View.NOTES} onClick={() => setCurrentView(View.NOTES)} icon={<ICONS.Note />} label="Journal" />
+        </nav>
+        
+        {/* Centered Website Link */}
+        <div className="pb-2">
+          <a 
+            href="https://newpsychonaut.com" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-[9px] uppercase tracking-[0.3em] font-light text-[#2c3e50]/30 hover:text-[#96adb3] transition-colors duration-500"
+          >
+            newpsychonaut.com
+          </a>
+        </div>
+      </footer>
     </div>
   );
 };
 
-interface NavButtonProps {
-  active: boolean;
-  onClick: () => void;
-  icon: React.ReactNode;
-  label: string;
-}
-
+interface NavButtonProps { active: boolean; onClick: () => void; icon: React.ReactNode; label: string; }
 const NavButton: React.FC<NavButtonProps> = ({ active, onClick, icon, label }) => (
-  <button onClick={onClick} className={`flex flex-col items-center gap-2 transition-all duration-700 ${active ? 'text-[#96adb3] scale-105' : 'text-[#2c3e50]/30 hover:text-[#96adb3]'}`}>
+  <button onClick={onClick} className={`flex flex-col items-center gap-1.5 transition-all duration-700 ${active ? 'text-[#96adb3] scale-105' : 'text-[#2c3e50]/30 hover:text-[#96adb3]'}`}>
     <div className="transition-transform duration-700">{icon}</div>
-    <span className="text-[9px] uppercase tracking-[0.2em] font-bold">{label}</span>
+    <span className="text-[8px] uppercase tracking-[0.2em] font-bold">{label}</span>
   </button>
 );
 

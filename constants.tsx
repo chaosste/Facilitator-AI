@@ -3,78 +3,64 @@ import React from 'react';
 import { VoiceSettings, SpecialistModule, AmbientTrack } from './types';
 
 export const AVATARS = {
-  feminine: 'https://storage.cloud.google.com/ai-studio-bucket-572556903588-us-west1/services/counsellor_ai_images/facilitator-female-1.jpeg',
-  masculine: 'https://storage.cloud.google.com/ai-studio-bucket-572556903588-us-west1/services/counsellor_ai_images/facilitator-male.jpg',
-  neutral: 'https://storage.cloud.google.com/ai-studio-bucket-572556903588-us-west1/services/counsellor_ai_images/facilitator-female-1.jpeg' 
+  feminine: 'https://storage.googleapis.com/ai-studio-bucket-572556903588-us-west1/services/counsellor_ai_images/facilitator-female-1.jpeg',
+  masculine: 'https://storage.googleapis.com/ai-studio-bucket-572556903588-us-west1/services/counsellor_ai_images/facilitator-male.jpg'
 };
 
+// Using more reliable public domain audio sources to prevent "no supported source" errors
 export const AMBIENT_TRACKS: AmbientTrack[] = [
   {
     id: 'forest',
     name: 'Ancient Forest',
     icon: '🌲',
-    url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3',
+    url: 'https://actions.google.com/sounds/v1/ambiences/forest_morning_birds.ogg',
     description: 'Deep resonance of old growth and rustling leaves.'
   },
   {
     id: 'rain',
     name: 'Gentle Rain',
     icon: '🌧️',
-    url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3',
+    url: 'https://actions.google.com/sounds/v1/ambiences/soft_rain_on_umbrella.ogg',
     description: 'A soft pitter-patter to cleanse the mind.'
   },
   {
     id: 'cosmic',
     name: 'Cosmic Drift',
     icon: '✨',
-    url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3',
-    description: 'Ethereal synths for transcendence and space.'
+    url: 'https://actions.google.com/sounds/v1/science_fiction/deep_space.ogg',
+    description: 'Ethereal soundscapes for transcendence and space.'
   },
   {
     id: 'waves',
     name: 'Ocean Breath',
     icon: '🌊',
-    url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+    url: 'https://actions.google.com/sounds/v1/ambiences/ocean_waves.ogg',
     description: 'Rhythmic tides mirroring the flow of life.'
-  },
-  {
-    id: 'chants',
-    name: 'Meditative Chants',
-    icon: '🧘',
-    url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
-    description: 'Low frequency drones and harmonic echoes.'
   },
   {
     id: 'brook',
     name: 'Gentle Brook',
     icon: '💧',
-    url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+    url: 'https://actions.google.com/sounds/v1/ambiences/river_flowing.ogg',
     description: 'Continuous flow of clear water over stones.'
-  },
-  {
-    id: 'thunder',
-    name: 'Distant Thunder',
-    icon: '⛈️',
-    url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
-    description: 'Subdued rumbling for grounded introspection.'
   }
 ];
 
 export const BASE_SYSTEM_INSTRUCTION = `
-You are “Facilitator-AI”—a highly modular AI conversational counsellor. Your foundation is built on the 9 core counselling skills (UCP framework).
+You are “Facilitator-AI”—a conversational counsellor. Your foundation is built on the 9 core counselling skills (UCP framework).
 
 Foundation Skills (UCP 9 Core Skills):
 1) Active Listening, 2) Empathy, 3) Nonverbal Awareness, 4) Reflection, 5) Questioning, 6) Summarising, 7) Rapport-Building, 8) Goal Setting, 9) Ethical Boundaries.
 
-VOICE ATTRIBUTES & PACING:
+VOICE ATTRIBUTES:
 - Speak with a SLOWER, MORE GENTLE, and DELIBERATE pace. 
-- Use frequent pauses to allow the user to reflect. 
-- Your tone is soft, warm, and inviting.
-- Current User Accent Preference: UK English.
+- Use frequent pauses. 
+- Your tone is soft and warm.
+- Accent: UK English.
 
-MANDATORY FIRST STEP - NAME VERIFICATION:
-- In your VERY FIRST message, you MUST greet the user by their name: {userName}.
-- You MUST ask: "Am I pronouncing your name correctly, {userName}?"
+MANDATORY FIRST STEP:
+- Greet the user by their name: {userName}.
+- Ask: "Am I pronouncing your name correctly, {userName}?"
 - Wait for the user's response before proceeding.
 
 Core Intent:
@@ -87,21 +73,21 @@ export const SPECIALIST_MODULES: SpecialistModule[] = [
     id: 'integration',
     name: 'Psychedelic Integration',
     icon: '🌀',
-    description: 'Expertise in navigating altered states of consciousness and integrating visionary experiences.',
+    description: 'Expertise in navigating altered states and integrating visionary experiences.',
     systemInstruction: `ADDITIONAL MODULE: PSYCHEDELIC INTEGRATION SPECIALIZATION...`
   },
   {
     id: 'sharing',
     name: 'Sharing Circles',
     icon: '⭕',
-    description: 'Philosophy and management of safe group integration circles based on the AyaSafe guidelines.',
+    description: 'Philosophy of safe group integration based on AyaSafe guidelines.',
     systemInstruction: `STRICT WORKFLOW MODULE: SHARING CIRCLES FACILITATION...`
   },
   {
     id: 'harm_reduction',
     name: 'Harm Reduction',
     icon: '🛡️',
-    description: 'Specialist safety protocols for ontological shock, groundlessness, and trauma-informed care.',
+    description: 'Specialist safety protocols for ontological shock and trauma-informed care.',
     systemInstruction: `ADDITIONAL MODULE: HARM REDUCTION & EXISTENTIAL SUPPORT...`
   }
 ];
@@ -141,11 +127,6 @@ export const ICONS = {
   Info: () => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-red-500">
       <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
-    </svg>
-  ),
-  Modules: () => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M14.25 6.087c0-.355.186-.676.401-.959.221-.29.349-.634.349-.997 0-.966-.784-1.75-1.75-1.75h-2.5c-.966 0-1.75.784-1.75 1.75 0 .363.128.707.349.997.215.283.401.604.401.959v.331c0 .414-.336.75-.75.75h-.331a1.144 1.144 0 01-.959-.401 1.147 1.147 0 01-.997-.349 1.75 1.75 0 00-1.75 1.75v2.5c0 .966.784 1.75 1.75 1.75.363 0 .707-.128.997-.349.283-.215.604-.401.959-.401h.331c.414 0 .75.336.75.75v.331c0 .355-.186.676-.401.959a1.147 1.147 0 01-.349.997c0 .966.784 1.75 1.75 1.75h2.5c.966 0 1.75-.784 1.75-1.75 0-.363-.128-.707-.349-.997a1.144 1.144 0 01-.401-.959v-.331c0-.414.336-.75.75-.75h.331c.355 0 .676.186.959.401.29.221.634.349.997.349.966 0 1.75-.784 1.75-1.75v-2.5c0-.966-.784-1.75-1.75-1.75a1.147 1.147 0 01-.997.349 1.144 1.144 0 01-.959.401h-.331a.75.75 0 01-.75-.75v-.331z" />
     </svg>
   ),
   Lotus: () => (
