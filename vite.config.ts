@@ -4,6 +4,7 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
+    
     return {
       server: {
         port: 3000,
@@ -11,8 +12,8 @@ export default defineConfig(({ mode }) => {
       },
       plugins: [react()],
       define: {
-        'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-        'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)
+        // Only expose the proxy URL, not any API keys
+        'import.meta.env.VITE_PROXY_URL': JSON.stringify(env.VITE_PROXY_URL || 'https://gemini-proxy-572556903588.us-central1.run.app')
       },
       resolve: {
         alias: {
