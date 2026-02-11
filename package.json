@@ -18,5 +18,20 @@
     "@vitejs/plugin-react": "^5.0.0",
     "typescript": "~5.8.2",
     "vite": "^6.2.0"
-  }
+  },
+  "description": "AI counsellor implementing UCP 9 core skills with specialist modules for psychedelic integration and harm reduction",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chaosste/Facilitator-AI"
+  },
+  "keywords": [
+    "counselling",
+    "ai-therapy",
+    "gemini-api",
+    "harm-reduction",
+    "psychedelic-integration",
+    "typescript"
+  ],
+  "author": "Stephen Beale",
+  "license": "MIT"
 }
