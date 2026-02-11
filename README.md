@@ -1,20 +1,75 @@
 <div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+
+# Facilitator AI
+
+**AI Conversational Counsellor**
+
+*Empathic dialogue grounded in the 9 Core Counselling Skills*
+
 </div>
 
-# Run and deploy your AI Studio app
+---
 
-This contains everything you need to run your app locally.
+## About
 
-View your app in AI Studio: https://ai.studio/apps/drive/1tMl9b8gE_CQD6bVqBM_6VXvDngQC90ku
+Facilitator AI is an AI-powered conversational counsellor built on the **9 Core Counselling Skills** framework (UCP). It offers real-time voice interaction and empathic text chat, providing a structured space for reflection, self-exploration, and emotional processing.
 
-## Run Locally
+The system features ambient soundscapes, personalised welcome flows, specialist modules, and configurable avatar and voice settings — creating an environment designed for genuine engagement.
 
-**Prerequisites:**  Node.js
+## Key Features
 
+- **9 Core Counselling Skills** — Grounded in the UCP counselling framework
+- **Real-Time Voice Interaction** — Natural spoken dialogue with configurable voice
+- **Empathic Text Chat** — Written conversation with emotionally attuned responses
+- **Ambient Soundscapes** — Forest, rain, cosmic, ocean, and brook environments
+- **Specialist Modules** — Activatable modules for focused areas of support
+- **Male/Female Avatars** — Choose your preferred counsellor presentation
+- **Personalised Welcome** — Name-based personalisation from first interaction
+- **Session Notes** — Structured note-taking throughout the session
+- **Attunements View** — Reflective exercises and grounding techniques
+- **Crisis Information** — Access to crisis support resources
+- **Voice Settings** — Kore voice with UK accent as default
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## Tech Stack
+
+- **Frontend:** React + TypeScript, Vite
+- **AI:** Google Gemini API
+- **Voice:** Kore voice engine, UK accent
+- **Deployment:** Docker / Google Cloud
+
+## Getting Started
+
+```bash
+# Clone the repository
+git clone https://github.com/chaosste/Facilitator-AI.git
+cd Facilitator-AI
+
+# Install dependencies
+npm install
+
+# Set up environment
+# Requires a Google Gemini API key
+
+# Run development server
+npm run dev
+```
+
+## ⚠️ Important Disclaimer
+
+**Facilitator AI is NOT a real therapist, counsellor, or mental health professional.** It is an AI system that simulates counselling conversation techniques for self-reflection purposes only.
+
+- **This is not therapy.** No therapeutic relationship is formed through use of this application
+- It does not diagnose, treat, or provide clinical advice for any condition
+- It is not a substitute for professional mental health support
+- **If you are in crisis**, please contact your local emergency services, call a crisis helpline, or reach out to a qualified professional immediately
+- The developers assume no liability for outcomes related to use of this application
+
+---
+
+<div align="center">
+
+**Built by [Steve Beale](https://newpsychonaut.com)**
+
+[newpsychonaut.com](https://newpsychonaut.com)
+
+</div>
