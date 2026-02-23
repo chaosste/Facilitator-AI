@@ -169,7 +169,7 @@ export const DEFAULT_ACTIVE_MODULE_IDS = SPECIALIST_MODULES
 export const AVAILABLE_VOICES: (VoiceSettings & { label: string })[] = [
   {
     profileId: 'laconic_spanish_chick',
-    label: 'Laconic Spanish Chick',
+    label: 'Mikaela',
     voiceName: 'Kore',
     gender: 'feminine',
     accent: 'ES',
@@ -177,7 +177,7 @@ export const AVAILABLE_VOICES: (VoiceSettings & { label: string })[] = [
   },
   {
     profileId: 'israeli_mystic',
-    label: 'Israeli Mystic',
+    label: 'Ariel',
     voiceName: 'Kore',
     gender: 'feminine',
     accent: 'IL',
@@ -185,7 +185,7 @@ export const AVAILABLE_VOICES: (VoiceSettings & { label: string })[] = [
   },
   {
     profileId: 'uk_paratrooper',
-    label: 'UK Former Paratrooper',
+    label: 'Davey',
     voiceName: 'Puck',
     gender: 'masculine',
     accent: 'UK',
