@@ -2,6 +2,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { GoogleGenAI, LiveServerMessage, Modality, Blob, FunctionDeclaration, Type } from '@google/genai';
 import { SessionNote, VoiceSettings } from '../types';
+import { AVAILABLE_VOICES } from '../constants';
 
 interface LiveVoiceViewProps {
   onAddNote: (note: SessionNote) => void;
@@ -60,6 +61,7 @@ const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({ onAddNote, voiceSettings,
   const bellAudioRef = useRef<HTMLAudioElement | null>(null);
   const lastInteractionTimeRef = useRef<number>(Date.now());
   const silenceIntervalRef = useRef<number | null>(null);
+  const voiceLabel = AVAILABLE_VOICES.find((voice) => voice.profileId === voiceSettings.profileId)?.label || voiceSettings.voiceName;
 
   useEffect(() => {
     bellAudioRef.current = new Audio(BELL_URL);
@@ -208,7 +210,7 @@ const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({ onAddNote, voiceSettings,
     <div className="h-full flex flex-col justify-center items-center space-y-16 animate-in fade-in duration-1000">
       <div className="text-center space-y-3">
         <h2 className="text-4xl font-serif italic text-[#2c3e50] tracking-tight">Sacred Communion</h2>
-        <p className="text-[#96adb3] text-[10px] uppercase tracking-[0.3em] font-bold">Presence: {voiceSettings.voiceName}</p>
+        <p className="text-[#96adb3] text-[10px] uppercase tracking-[0.3em] font-bold">Presence: {voiceLabel}</p>
       </div>
 
       <div className="relative flex items-center justify-center">

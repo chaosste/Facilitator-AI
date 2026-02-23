@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { VoiceSettings } from '../types';
-import { ICONS } from '../constants';
+import { AVAILABLE_VOICES, ICONS } from '../constants';
 import { GoogleGenAI, Modality } from '@google/genai';
 
 interface SettingsViewProps {
@@ -13,20 +13,15 @@ interface SettingsViewProps {
 const SettingsView: React.FC<SettingsViewProps> = ({ settings, onUpdate, onResetName }) => {
   const [isPreviewLoading, setIsPreviewLoading] = useState(false);
 
-  // Simplified selection logic for UK Male/Female
-  const selectFemale = () => {
+  const selectPreset = (profileId: string) => {
+    const selectedPreset = AVAILABLE_VOICES.find((voice) => voice.profileId === profileId);
+    if (!selectedPreset) return;
     onUpdate({
-      voiceName: 'Kore',
-      gender: 'feminine',
-      accent: 'UK'
-    });
-  };
-
-  const selectMale = () => {
-    onUpdate({
-      voiceName: 'Puck',
-      gender: 'masculine',
-      accent: 'UK'
+      profileId: selectedPreset.profileId,
+      voiceName: selectedPreset.voiceName,
+      gender: selectedPreset.gender,
+      accent: selectedPreset.accent,
+      styleInstruction: selectedPreset.styleInstruction
     });
   };
 
@@ -59,8 +54,8 @@ const SettingsView: React.FC<SettingsViewProps> = ({ settings, onUpdate, onReset
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash-preview-tts",
-        contents: [{ parts: [{ text: `I am your Facilitator. This is my ${settings.gender} voice.` }] }],
+          model: "gemini-2.5-flash-preview-tts",
+          contents: [{ parts: [{ text: `I am your Facilitator. This is my ${settings.profileId.replace(/_/g, ' ')} voice.` }] }],
         config: {
           responseModalities: [Modality.AUDIO],
           speechConfig: {
@@ -110,30 +105,21 @@ const SettingsView: React.FC<SettingsViewProps> = ({ settings, onUpdate, onReset
         <div className="space-y-8">
           <div className="space-y-6">
             <label className="text-[9px] font-black text-[#2c3e50]/30 uppercase tracking-[0.4em] block text-center">Auditory Presence</label>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <button
-                onClick={selectFemale}
-                className={`py-8 px-6 rounded-[2rem] border transition-all duration-700 flex flex-col items-center gap-4 ${
-                  settings.gender === 'feminine' 
-                    ? 'border-[#96adb3] bg-white shadow-lg text-[#2c3e50]' 
-                    : 'border-[#96adb3]/10 bg-white/40 text-[#2c3e50]/30 hover:border-[#96adb3]/30'
-                }`}
-              >
-                <span className="text-4xl">✨</span>
-                <span className="text-xs font-black uppercase tracking-[0.3em]">Female (UK)</span>
-              </button>
-
-              <button
-                onClick={selectMale}
-                className={`py-8 px-6 rounded-[2rem] border transition-all duration-700 flex flex-col items-center gap-4 ${
-                  settings.gender === 'masculine' 
-                    ? 'border-[#96adb3] bg-white shadow-lg text-[#2c3e50]' 
-                    : 'border-[#96adb3]/10 bg-white/40 text-[#2c3e50]/30 hover:border-[#96adb3]/30'
-                }`}
-              >
-                <span className="text-4xl">🌿</span>
-                <span className="text-xs font-black uppercase tracking-[0.3em]">Male (UK)</span>
-              </button>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {AVAILABLE_VOICES.map((voice) => (
+                <button
+                  key={voice.profileId}
+                  onClick={() => selectPreset(voice.profileId)}
+                  className={`py-8 px-6 rounded-[2rem] border transition-all duration-700 flex flex-col items-center gap-4 ${
+                    settings.profileId === voice.profileId
+                      ? 'border-[#96adb3] bg-white shadow-lg text-[#2c3e50]'
+                      : 'border-[#96adb3]/10 bg-white/40 text-[#2c3e50]/40 hover:border-[#96adb3]/30'
+                  }`}
+                >
+                  <span className="text-3xl">{voice.gender === 'feminine' ? '✨' : '🪖'}</span>
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-center">{voice.label}</span>
+                </button>
+              ))}
             </div>
           </div>
 

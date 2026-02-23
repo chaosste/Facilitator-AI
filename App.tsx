@@ -1,7 +1,15 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { View, SessionNote, VoiceSettings } from './types';
-import { ICONS, BASE_SYSTEM_INSTRUCTION, SPECIALIST_MODULES, AVATARS } from './constants';
+import {
+  ICONS,
+  BASE_SYSTEM_INSTRUCTION,
+  SPECIALIST_MODULES,
+  AVATARS,
+  AVAILABLE_VOICES,
+  DEFAULT_ACTIVE_MODULE_IDS,
+  CRISIS_BREADCRUMBS
+} from './constants';
 import ChatView from './components/ChatView';
 import LiveVoiceView from './components/LiveVoiceView';
 import SessionNotes from './components/SessionNotes';
@@ -18,23 +26,20 @@ const App: React.FC = () => {
   const [showCrisisInfo, setShowCrisisInfo] = useState(false);
   const [showAmbientPanel, setShowAmbientPanel] = useState(false);
   const [activeModuleIds, setActiveModuleIds] = useState<string[]>([]);
-  const [voiceSettings, setVoiceSettings] = useState<VoiceSettings>({
-    voiceName: 'Kore',
-    gender: 'feminine',
-    accent: 'UK'
-  });
+  const [voiceSettings, setVoiceSettings] = useState<VoiceSettings>(AVAILABLE_VOICES[0]);
 
   const dynamicSystemInstruction = useMemo(() => {
     let instruction = BASE_SYSTEM_INSTRUCTION
       .replace(/{userName}/g, userName || 'friend');
-    activeModuleIds.forEach(id => {
+    instruction += `\n${voiceSettings.styleInstruction}`;
+    activeModuleIds.forEach((id) => {
       const mod = SPECIALIST_MODULES.find(m => m.id === id);
       if (mod) {
         instruction += `\n${mod.systemInstruction.replace(/{userName}/g, userName || 'friend')}`;
       }
     });
     return instruction;
-  }, [activeModuleIds, userName]);
+  }, [activeModuleIds, userName, voiceSettings.styleInstruction]);
 
   const avatarUrl = useMemo(() => {
     return AVATARS[voiceSettings.gender];
@@ -57,15 +62,31 @@ const App: React.FC = () => {
     const savedSettings = localStorage.getItem('counselai_voice_settings');
     if (savedSettings) {
       try {
-        setVoiceSettings(JSON.parse(savedSettings));
+        const parsedSettings = JSON.parse(savedSettings) as Partial<VoiceSettings>;
+        const matchingProfile =
+          AVAILABLE_VOICES.find((voice) => voice.profileId === parsedSettings.profileId) ||
+          AVAILABLE_VOICES.find(
+            (voice) =>
+              voice.voiceName === parsedSettings.voiceName &&
+              voice.gender === parsedSettings.gender
+          ) ||
+          AVAILABLE_VOICES[0];
+        setVoiceSettings(matchingProfile);
       } catch (e) { console.error("Failed to parse voice settings", e); }
     }
 
     const savedModules = localStorage.getItem('counselai_active_modules');
     if (savedModules) {
       try {
-        setActiveModuleIds(JSON.parse(savedModules));
+        const parsed = JSON.parse(savedModules);
+        const safeguardedModules = SPECIALIST_MODULES
+          .filter((module) => module.defaultEnabled)
+          .map((module) => module.id);
+        const merged = Array.from(new Set([...parsed, ...safeguardedModules]));
+        setActiveModuleIds(merged);
       } catch (e) { console.error("Failed to parse modules", e); }
+    } else {
+      setActiveModuleIds(DEFAULT_ACTIVE_MODULE_IDS);
     }
   }, []);
 
@@ -94,7 +115,21 @@ const App: React.FC = () => {
   };
 
   const toggleModule = (id: string) => {
-    setActiveModuleIds(prev => prev.includes(id) ? prev.filter(mid => mid !== id) : [...prev, id]);
+    setActiveModuleIds((prev) => {
+      const isActive = prev.includes(id);
+      const selectedModule = SPECIALIST_MODULES.find((module) => module.id === id);
+      if (!selectedModule) return prev;
+
+      if (isActive && selectedModule.safeguarded) {
+        const warningText =
+          selectedModule.safeguardedWarning ||
+          'Are you SURE you want to turn off this safeguarded module?';
+        const confirmed = window.confirm(warningText);
+        if (!confirmed) return prev;
+      }
+
+      return isActive ? prev.filter((moduleId) => moduleId !== id) : [...prev, id];
+    });
   };
 
   const clearAllNotes = () => {
@@ -160,7 +195,11 @@ const App: React.FC = () => {
               <ICONS.Info />
               <div className="space-y-3">
                 <p className="font-serif italic text-xl text-red-900">Immediate Support</p>
-                <p className="text-sm opacity-80 leading-relaxed tracking-wide">If you are in danger, contact emergency services. Text HOME to 741741 or call 988.</p>
+                <ul className="text-sm opacity-80 leading-relaxed tracking-wide list-disc pl-6 space-y-1">
+                  {CRISIS_BREADCRUMBS.map((line) => (
+                    <li key={line}>{line}</li>
+                  ))}
+                </ul>
               </div>
             </div>
             <button onClick={() => setShowCrisisInfo(false)} className="p-2 hover:bg-red-100 rounded-full transition-colors">
