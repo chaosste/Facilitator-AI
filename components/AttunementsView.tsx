@@ -49,13 +49,18 @@ const AttunementsView: React.FC<AttunementsViewProps> = ({ activeModuleIds, onTo
               <h4 className={`text-2xl font-serif mb-3 ${isActive ? 'text-[#2c3e50]' : 'text-[#2c3e50]/80'}`}>
                 {mod.name}
               </h4>
+              <div className="mb-3">
+                <span className="text-[9px] uppercase tracking-[0.2em] font-black text-[#96adb3] border border-[#96adb3]/20 rounded-full px-3 py-1">
+                  {mod.sectionTag || 'Practice'}
+                </span>
+              </div>
               <p className={`text-sm leading-relaxed font-light tracking-wide mb-8 ${isActive ? 'text-[#2c3e50]/70' : 'text-[#2c3e50]/40'}`}>
                 {mod.description}
               </p>
               <div className={`mt-auto py-3 px-6 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] inline-block transition-all duration-700 text-center ${
                 isActive ? 'bg-[#96adb3] text-white shadow-lg' : 'bg-[#96adb3]/5 text-[#96adb3]/40 group-hover:bg-[#96adb3]/10 group-hover:text-[#96adb3]'
               }`}>
-                {isActive ? 'Essence Active' : 'Attune Essence'}
+                {isActive ? (mod.safeguarded ? 'ON (Safety Locked)' : 'Essence Active') : 'Attune Essence'}
               </div>
             </button>
           );

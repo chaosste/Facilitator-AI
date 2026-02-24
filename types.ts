@@ -10,9 +10,11 @@ export enum View {
 }
 
 export interface VoiceSettings {
+  profileId: string;
   voiceName: string;
   gender: 'feminine' | 'masculine';
-  accent: 'UK';
+  accent: 'UK' | 'ES' | 'IL';
+  styleInstruction: string;
 }
 
 export interface SpecialistModule {
@@ -21,6 +23,10 @@ export interface SpecialistModule {
   description: string;
   systemInstruction: string;
   icon: string;
+  defaultEnabled?: boolean;
+  safeguarded?: boolean;
+  safeguardedWarning?: string;
+  sectionTag?: 'Foundation' | 'Practice' | 'Safety';
 }
 
 export interface AmbientTrack {
