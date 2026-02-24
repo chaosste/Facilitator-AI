@@ -27,6 +27,7 @@ const App: React.FC = () => {
   const [showAmbientPanel, setShowAmbientPanel] = useState(false);
   const [activeModuleIds, setActiveModuleIds] = useState<string[]>([]);
   const [voiceSettings, setVoiceSettings] = useState<VoiceSettings>(AVAILABLE_VOICES[0]);
+  const [apiKey, setApiKey] = useState<string>('');
 
   const dynamicSystemInstruction = useMemo(() => {
     let instruction = BASE_SYSTEM_INSTRUCTION
@@ -88,6 +89,9 @@ const App: React.FC = () => {
     } else {
       setActiveModuleIds(DEFAULT_ACTIVE_MODULE_IDS);
     }
+
+    const savedApiKey = sessionStorage.getItem('facilitator_api_key');
+    if (savedApiKey) setApiKey(savedApiKey);
   }, []);
 
   useEffect(() => {
@@ -105,6 +109,14 @@ const App: React.FC = () => {
   useEffect(() => {
     localStorage.setItem('counselai_active_modules', JSON.stringify(activeModuleIds));
   }, [activeModuleIds]);
+
+  useEffect(() => {
+    if (apiKey.trim()) {
+      sessionStorage.setItem('facilitator_api_key', apiKey);
+    } else {
+      sessionStorage.removeItem('facilitator_api_key');
+    }
+  }, [apiKey]);
 
   const addNote = (note: SessionNote) => {
     setSessionNotes(prev => [note, ...prev]);
@@ -217,11 +229,20 @@ const App: React.FC = () => {
               avatarUrl={avatarUrl}
               onToggleAmbient={() => setShowAmbientPanel(!showAmbientPanel)}
               isAmbientOpen={showAmbientPanel}
+              apiKey={apiKey}
             />
           )}
-          {currentView === View.VOICE && <LiveVoiceView onAddNote={addNote} voiceSettings={voiceSettings} systemInstruction={dynamicSystemInstruction} avatarUrl={avatarUrl} />}
+          {currentView === View.VOICE && <LiveVoiceView onAddNote={addNote} voiceSettings={voiceSettings} systemInstruction={dynamicSystemInstruction} avatarUrl={avatarUrl} apiKey={apiKey} />}
           {currentView === View.NOTES && <SessionNotes notes={sessionNotes} onDelete={deleteNote} onClear={clearAllNotes} />}
-          {currentView === View.SETTINGS && <SettingsView settings={voiceSettings} onUpdate={setVoiceSettings} onResetName={() => setCurrentView(View.WELCOME)} />}
+          {currentView === View.SETTINGS && (
+            <SettingsView
+              settings={voiceSettings}
+              onUpdate={setVoiceSettings}
+              onResetName={() => setCurrentView(View.WELCOME)}
+              apiKey={apiKey}
+              onApiKeyChange={setApiKey}
+            />
+          )}
           {currentView === View.ATTUNEMENTS && <AttunementsView activeModuleIds={activeModuleIds} onToggleModule={toggleModule} onBack={() => setCurrentView(View.HOME)} />}
         </div>
       </main>

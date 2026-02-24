@@ -9,6 +9,7 @@ interface LiveVoiceViewProps {
   voiceSettings: VoiceSettings;
   systemInstruction: string;
   avatarUrl: string;
+  apiKey: string;
 }
 
 const BELL_URL = 'https://storage.googleapis.com/ai-studio-bucket-572556903588-us-west1/services/self-test-images/Tibetan%20Singing%20Bowl%20Sounds%20-%20OM.mp3';
@@ -46,7 +47,7 @@ const playBellDeclaration: FunctionDeclaration = {
   }
 };
 
-const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({ onAddNote, voiceSettings, systemInstruction, avatarUrl }) => {
+const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({ onAddNote, voiceSettings, systemInstruction, avatarUrl, apiKey }) => {
   const [isActive, setIsActive] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
   const [transcription, setTranscription] = useState<string>('');
@@ -134,7 +135,8 @@ const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({ onAddNote, voiceSettings,
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+      if (!apiKey.trim()) throw new Error("Missing Gemini API key. Add it in Settings.");
+      const ai = new GoogleGenAI({ apiKey });
       const inputCtx = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
       const outputCtx = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
       audioContextRef.current = inputCtx;

@@ -10,6 +10,7 @@ interface ChatViewProps {
   avatarUrl: string;
   onToggleAmbient: () => void;
   isAmbientOpen: boolean;
+  apiKey: string;
 }
 
 const writeSessionNoteDeclaration: FunctionDeclaration = {
@@ -36,7 +37,7 @@ const writeSessionNoteDeclaration: FunctionDeclaration = {
   }
 };
 
-const ChatView: React.FC<ChatViewProps> = ({ onAddNote, systemInstruction, avatarUrl, onToggleAmbient, isAmbientOpen }) => {
+const ChatView: React.FC<ChatViewProps> = ({ onAddNote, systemInstruction, avatarUrl, onToggleAmbient, isAmbientOpen, apiKey }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([
     { role: 'assistant', text: "Welcome to this space. How are you feeling in this moment?", timestamp: new Date() }
   ]);
@@ -59,7 +60,10 @@ const ChatView: React.FC<ChatViewProps> = ({ onAddNote, systemInstruction, avata
     setIsTyping(true);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+      if (!apiKey.trim()) {
+        throw new Error("Missing Gemini API key. Add it in Settings.");
+      }
+      const ai = new GoogleGenAI({ apiKey });
       const chat = ai.chats.create({
         model: 'gemini-3-pro-preview',
         config: {

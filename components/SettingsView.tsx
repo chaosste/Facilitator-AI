@@ -8,9 +8,11 @@ interface SettingsViewProps {
   settings: VoiceSettings;
   onUpdate: (settings: VoiceSettings) => void;
   onResetName: () => void;
+  apiKey: string;
+  onApiKeyChange: (value: string) => void;
 }
 
-const SettingsView: React.FC<SettingsViewProps> = ({ settings, onUpdate, onResetName }) => {
+const SettingsView: React.FC<SettingsViewProps> = ({ settings, onUpdate, onResetName, apiKey, onApiKeyChange }) => {
   const [isPreviewLoading, setIsPreviewLoading] = useState(false);
 
   const selectPreset = (profileId: string) => {
@@ -52,7 +54,8 @@ const SettingsView: React.FC<SettingsViewProps> = ({ settings, onUpdate, onReset
     setIsPreviewLoading(true);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+      if (!apiKey.trim()) throw new Error("Missing Gemini API key. Add it below.");
+      const ai = new GoogleGenAI({ apiKey });
       const response = await ai.models.generateContent({
           model: "gemini-2.5-flash-preview-tts",
           contents: [{ parts: [{ text: `I am your Facilitator. This is my ${settings.profileId.replace(/_/g, ' ')} voice.` }] }],
@@ -121,6 +124,17 @@ const SettingsView: React.FC<SettingsViewProps> = ({ settings, onUpdate, onReset
                 </button>
               ))}
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-[9px] font-black text-[#2c3e50]/30 uppercase tracking-[0.4em] block">Gemini API Key</label>
+            <input
+              type="password"
+              value={apiKey}
+              onChange={(e) => onApiKeyChange(e.target.value)}
+              placeholder="Enter API key for voice/chat"
+              className="w-full border border-[#96adb3]/20 rounded-xl px-4 py-3 bg-white text-sm focus:outline-none focus:border-[#96adb3]"
+            />
           </div>
 
           <div className="flex justify-center pt-4">
