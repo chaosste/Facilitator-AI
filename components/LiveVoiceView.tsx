@@ -52,6 +52,13 @@ const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({ onAddNote, voiceSettings,
   const [isConnecting, setIsConnecting] = useState(false);
   const [transcription, setTranscription] = useState<string>('');
   const [visualizerScale, setVisualizerScale] = useState(1);
+  const [diagnostics, setDiagnostics] = useState({
+    key: 'unknown',
+    mic: 'unknown',
+    network: 'unknown',
+    session: 'idle',
+    message: 'Ready to start.'
+  });
 
   const audioContextRef = useRef<AudioContext | null>(null);
   const outputAudioContextRef = useRef<AudioContext | null>(null);
@@ -62,6 +69,7 @@ const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({ onAddNote, voiceSettings,
   const bellAudioRef = useRef<HTMLAudioElement | null>(null);
   const lastInteractionTimeRef = useRef<number>(Date.now());
   const silenceIntervalRef = useRef<number | null>(null);
+  const connectTimeoutRef = useRef<number | null>(null);
   const voiceLabel = AVAILABLE_VOICES.find((voice) => voice.profileId === voiceSettings.profileId)?.label || voiceSettings.voiceName;
 
   useEffect(() => {
@@ -122,20 +130,36 @@ const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({ onAddNote, voiceSettings,
 
   const stopSession = useCallback(() => {
     if (silenceIntervalRef.current) window.clearInterval(silenceIntervalRef.current);
+    if (connectTimeoutRef.current) window.clearTimeout(connectTimeoutRef.current);
     if (sessionRef.current) { try { sessionRef.current.close(); } catch(e) {} sessionRef.current = null; }
     if (streamRef.current) { streamRef.current.getTracks().forEach(t => t.stop()); streamRef.current = null; }
     if (audioContextRef.current && audioContextRef.current.state !== 'closed') audioContextRef.current.close().catch(() => {});
     if (outputAudioContextRef.current && outputAudioContextRef.current.state !== 'closed') outputAudioContextRef.current.close().catch(() => {});
     setIsActive(false); setIsConnecting(false); setVisualizerScale(1);
+    setDiagnostics((prev) => prev.session === 'error'
+      ? prev
+      : { ...prev, session: 'closed', message: 'Session closed.' });
   }, []);
 
   const startSession = async () => {
     setIsConnecting(true);
     lastInteractionTimeRef.current = Date.now();
     try {
+      if (!apiKey.trim()) throw new Error("Missing Gemini API key. Add it in Settings.");
+      setDiagnostics({
+        key: 'ok',
+        mic: 'checking',
+        network: 'checking',
+        session: 'connecting',
+        message: 'API key found. Requesting microphone access...'
+      });
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
-      if (!apiKey.trim()) throw new Error("Missing Gemini API key. Add it in Settings.");
+      setDiagnostics((prev) => ({
+        ...prev,
+        mic: 'ok',
+        message: 'Microphone ready. Opening live model connection...'
+      }));
       const ai = new GoogleGenAI({ apiKey });
       const inputCtx = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
       const outputCtx = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
@@ -147,6 +171,17 @@ const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({ onAddNote, voiceSettings,
         callbacks: {
           onopen: () => {
             setIsActive(true); setIsConnecting(false);
+            if (connectTimeoutRef.current) {
+              window.clearTimeout(connectTimeoutRef.current);
+              connectTimeoutRef.current = null;
+            }
+            setDiagnostics({
+              key: 'ok',
+              mic: 'ok',
+              network: 'ok',
+              session: 'live',
+              message: 'Live session connected.'
+            });
             const source = inputCtx.createMediaStreamSource(stream);
             const scriptProcessor = inputCtx.createScriptProcessor(4096, 1, 1);
             scriptProcessor.onaudioprocess = (e) => {
@@ -191,7 +226,15 @@ const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({ onAddNote, voiceSettings,
             }
             if (message.serverContent?.interrupted) { sourcesRef.current.forEach(s => s.stop()); sourcesRef.current.clear(); nextStartTimeRef.current = 0; }
           },
-          onerror: () => stopSession(),
+          onerror: (err) => {
+            const text = `${(err as any)?.message || err || ''}`.toLowerCase();
+            if (text.includes('key') || text.includes('auth')) {
+              setDiagnostics((prev) => ({ ...prev, key: 'fail', session: 'error', message: 'API key invalid or rejected.' }));
+            } else {
+              setDiagnostics((prev) => ({ ...prev, network: 'fail', session: 'error', message: 'Network/session link failed.' }));
+            }
+            stopSession();
+          },
           onclose: () => stopSession()
         },
         config: {
@@ -202,8 +245,27 @@ const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({ onAddNote, voiceSettings,
           outputAudioTranscription: {}
         }
       });
+      connectTimeoutRef.current = window.setTimeout(() => {
+        setDiagnostics((prev) => ({
+          ...prev,
+          network: 'fail',
+          session: 'error',
+          message: 'Connection timed out. Retry after checking network/API key.'
+        }));
+        stopSession();
+      }, 15000);
       sessionRef.current = await sessionPromise;
-    } catch (err) { setIsConnecting(false); }
+    } catch (err) {
+      setIsConnecting(false);
+      const text = `${(err as any)?.message || err || ''}`.toLowerCase();
+      if (text.includes('api key') || text.includes('key')) {
+        setDiagnostics({ key: 'fail', mic: 'unknown', network: 'unknown', session: 'error', message: 'Missing API key. Add it in Settings.' });
+      } else if (text.includes('microphone') || text.includes('permission') || text.includes('notallowederror') || text.includes('notfounderror')) {
+        setDiagnostics({ key: 'ok', mic: 'fail', network: 'unknown', session: 'error', message: 'Microphone blocked or unavailable.' });
+      } else {
+        setDiagnostics({ key: 'ok', mic: 'ok', network: 'fail', session: 'error', message: 'Connection failed. Check network and retry.' });
+      }
+    }
   };
 
   useEffect(() => { return () => stopSession(); }, [stopSession]);
@@ -213,6 +275,16 @@ const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({ onAddNote, voiceSettings,
       <div className="text-center space-y-3">
         <h2 className="text-4xl font-serif italic text-[#2c3e50] tracking-tight">Sacred Communion</h2>
         <p className="text-[#96adb3] text-[10px] uppercase tracking-[0.3em] font-bold">Presence: {voiceLabel}</p>
+      </div>
+
+      <div className="w-full max-w-3xl rounded-2xl border border-[#96adb3]/20 bg-white/70 px-5 py-4 text-[#2c3e50]">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-[11px] uppercase tracking-wider">
+          <span>Key: <strong>{String(diagnostics.key)}</strong></span>
+          <span>Mic: <strong>{String(diagnostics.mic)}</strong></span>
+          <span>Network: <strong>{String(diagnostics.network)}</strong></span>
+          <span>Session: <strong>{String(diagnostics.session)}</strong></span>
+        </div>
+        <p className="mt-2 text-sm">{diagnostics.message}</p>
       </div>
 
       <div className="relative flex items-center justify-center">
