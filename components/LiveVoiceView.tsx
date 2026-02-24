@@ -1,8 +1,9 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { GoogleGenAI, LiveServerMessage, Modality, Blob, FunctionDeclaration, Type } from '@google/genai';
-import { SessionNote, VoiceSettings } from '../types';
+import { SessionNote, VoiceProvider, VoiceSettings } from '../types';
 import { AVAILABLE_VOICES } from '../constants';
+import { connectAzureRealtimeSession } from '../services/azureRealtimeService';
 
 interface LiveVoiceViewProps {
   onAddNote: (note: SessionNote) => void;
@@ -10,6 +11,7 @@ interface LiveVoiceViewProps {
   systemInstruction: string;
   avatarUrl: string;
   apiKey: string;
+  voiceProvider: VoiceProvider;
 }
 
 const BELL_URL = 'https://storage.googleapis.com/ai-studio-bucket-572556903588-us-west1/services/self-test-images/Tibetan%20Singing%20Bowl%20Sounds%20-%20OM.mp3';
@@ -47,7 +49,14 @@ const playBellDeclaration: FunctionDeclaration = {
   }
 };
 
-const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({ onAddNote, voiceSettings, systemInstruction, avatarUrl, apiKey }) => {
+const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({
+  onAddNote,
+  voiceSettings,
+  systemInstruction,
+  avatarUrl,
+  apiKey,
+  voiceProvider
+}) => {
   const [isActive, setIsActive] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
   const [transcription, setTranscription] = useState<string>('');
@@ -70,6 +79,7 @@ const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({ onAddNote, voiceSettings,
   const lastInteractionTimeRef = useRef<number>(Date.now());
   const silenceIntervalRef = useRef<number | null>(null);
   const connectTimeoutRef = useRef<number | null>(null);
+  const azureAiBufferRef = useRef<string>('');
   const voiceLabel = AVAILABLE_VOICES.find((voice) => voice.profileId === voiceSettings.profileId)?.label || voiceSettings.voiceName;
 
   useEffect(() => {
@@ -145,6 +155,76 @@ const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({ onAddNote, voiceSettings,
     setIsConnecting(true);
     lastInteractionTimeRef.current = Date.now();
     try {
+      if (voiceProvider === 'AZURE_OPENAI_REALTIME') {
+        setDiagnostics({
+          key: 'checking',
+          mic: 'checking',
+          network: 'checking',
+          session: 'connecting',
+          message: 'Requesting Azure Realtime session...'
+        });
+        connectTimeoutRef.current = window.setTimeout(() => {
+          setDiagnostics((prev) => ({
+            ...prev,
+            network: 'fail',
+            session: 'error',
+            message: 'Azure Realtime connection timed out.'
+          }));
+          stopSession();
+        }, 15000);
+
+        const voice = voiceSettings.gender === 'masculine' ? 'alloy' : 'verse';
+        sessionRef.current = await connectAzureRealtimeSession(systemInstruction, voice, {
+          onOpen: () => {
+            if (connectTimeoutRef.current) {
+              window.clearTimeout(connectTimeoutRef.current);
+              connectTimeoutRef.current = null;
+            }
+            setIsActive(true);
+            setIsConnecting(false);
+            setDiagnostics({
+              key: 'ok',
+              mic: 'ok',
+              network: 'ok',
+              session: 'live',
+              message: 'Azure Realtime live session connected.'
+            });
+          },
+          onClose: () => {
+            setIsActive(false);
+            setIsConnecting(false);
+            setDiagnostics((prev) => prev.session === 'error'
+              ? prev
+              : { ...prev, session: 'closed', message: 'Session closed.' });
+          },
+          onError: (message) => {
+            const text = message.toLowerCase();
+            if (text.includes('key') || text.includes('token') || text.includes('configured')) {
+              setDiagnostics((prev) => ({ ...prev, key: 'fail', session: 'error', message }));
+            } else if (text.includes('microphone') || text.includes('permission')) {
+              setDiagnostics((prev) => ({ ...prev, mic: 'fail', session: 'error', message }));
+            } else {
+              setDiagnostics((prev) => ({ ...prev, network: 'fail', session: 'error', message }));
+            }
+            stopSession();
+          },
+          onAiTranscriptDelta: (delta) => {
+            azureAiBufferRef.current += delta;
+            setTranscription(azureAiBufferRef.current);
+          },
+          onAiTurnDone: () => {
+            azureAiBufferRef.current = '';
+            setTranscription('');
+          },
+          onUserTurn: (text) => {
+            if (text.trim()) {
+              setTranscription(text.trim());
+            }
+          }
+        });
+        return;
+      }
+
       if (!apiKey.trim()) throw new Error("Missing Gemini API key. Add it in Settings.");
       setDiagnostics({
         key: 'ok',
@@ -274,7 +354,9 @@ const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({ onAddNote, voiceSettings,
     <div className="h-full flex flex-col justify-center items-center space-y-16 animate-in fade-in duration-1000">
       <div className="text-center space-y-3">
         <h2 className="text-4xl font-serif italic text-[#2c3e50] tracking-tight">Sacred Communion</h2>
-        <p className="text-[#96adb3] text-[10px] uppercase tracking-[0.3em] font-bold">Presence: {voiceLabel}</p>
+        <p className="text-[#96adb3] text-[10px] uppercase tracking-[0.3em] font-bold">
+          Presence: {voiceLabel} • {voiceProvider === 'AZURE_OPENAI_REALTIME' ? 'Azure' : 'Gemini'}
+        </p>
       </div>
 
       <div className="w-full max-w-3xl rounded-2xl border border-[#96adb3]/20 bg-white/70 px-5 py-4 text-[#2c3e50]">

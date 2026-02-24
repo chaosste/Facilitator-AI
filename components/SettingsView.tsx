@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { VoiceSettings } from '../types';
+import { VoiceProvider, VoiceSettings } from '../types';
 import { AVAILABLE_VOICES, ICONS } from '../constants';
 import { GoogleGenAI, Modality } from '@google/genai';
 
@@ -10,9 +10,19 @@ interface SettingsViewProps {
   onResetName: () => void;
   apiKey: string;
   onApiKeyChange: (value: string) => void;
+  voiceProvider: VoiceProvider;
+  onVoiceProviderChange: (value: VoiceProvider) => void;
 }
 
-const SettingsView: React.FC<SettingsViewProps> = ({ settings, onUpdate, onResetName, apiKey, onApiKeyChange }) => {
+const SettingsView: React.FC<SettingsViewProps> = ({
+  settings,
+  onUpdate,
+  onResetName,
+  apiKey,
+  onApiKeyChange,
+  voiceProvider,
+  onVoiceProviderChange
+}) => {
   const [isPreviewLoading, setIsPreviewLoading] = useState(false);
 
   const selectPreset = (profileId: string) => {
@@ -135,6 +145,18 @@ const SettingsView: React.FC<SettingsViewProps> = ({ settings, onUpdate, onReset
               placeholder="Enter API key for voice/chat"
               className="w-full border border-[#96adb3]/20 rounded-xl px-4 py-3 bg-white text-sm focus:outline-none focus:border-[#96adb3]"
             />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-[9px] font-black text-[#2c3e50]/30 uppercase tracking-[0.4em] block">Voice Provider</label>
+            <select
+              value={voiceProvider}
+              onChange={(e) => onVoiceProviderChange(e.target.value as VoiceProvider)}
+              className="w-full border border-[#96adb3]/20 rounded-xl px-4 py-3 bg-white text-sm focus:outline-none focus:border-[#96adb3]"
+            >
+              <option value="GEMINI">Gemini Live</option>
+              <option value="AZURE_OPENAI_REALTIME">Azure OpenAI Realtime</option>
+            </select>
           </div>
 
           <div className="flex justify-center pt-4">

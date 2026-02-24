@@ -17,6 +17,8 @@ export interface VoiceSettings {
   styleInstruction: string;
 }
 
+export type VoiceProvider = 'GEMINI' | 'AZURE_OPENAI_REALTIME';
+
 export interface SpecialistModule {
   id: string;
   name: string;

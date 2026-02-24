@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { View, SessionNote, VoiceSettings } from './types';
+import { View, SessionNote, VoiceSettings, VoiceProvider } from './types';
 import {
   ICONS,
   BASE_SYSTEM_INSTRUCTION,
@@ -27,6 +27,7 @@ const App: React.FC = () => {
   const [showAmbientPanel, setShowAmbientPanel] = useState(false);
   const [activeModuleIds, setActiveModuleIds] = useState<string[]>([]);
   const [voiceSettings, setVoiceSettings] = useState<VoiceSettings>(AVAILABLE_VOICES[0]);
+  const [voiceProvider, setVoiceProvider] = useState<VoiceProvider>('GEMINI');
   const [apiKey, setApiKey] = useState<string>('');
 
   const dynamicSystemInstruction = useMemo(() => {
@@ -92,6 +93,10 @@ const App: React.FC = () => {
 
     const savedApiKey = sessionStorage.getItem('facilitator_api_key');
     if (savedApiKey) setApiKey(savedApiKey);
+    const savedProvider = localStorage.getItem('facilitator_voice_provider');
+    if (savedProvider === 'AZURE_OPENAI_REALTIME' || savedProvider === 'GEMINI') {
+      setVoiceProvider(savedProvider);
+    }
   }, []);
 
   useEffect(() => {
@@ -117,6 +122,10 @@ const App: React.FC = () => {
       sessionStorage.removeItem('facilitator_api_key');
     }
   }, [apiKey]);
+
+  useEffect(() => {
+    localStorage.setItem('facilitator_voice_provider', voiceProvider);
+  }, [voiceProvider]);
 
   const addNote = (note: SessionNote) => {
     setSessionNotes(prev => [note, ...prev]);
@@ -232,7 +241,16 @@ const App: React.FC = () => {
               apiKey={apiKey}
             />
           )}
-          {currentView === View.VOICE && <LiveVoiceView onAddNote={addNote} voiceSettings={voiceSettings} systemInstruction={dynamicSystemInstruction} avatarUrl={avatarUrl} apiKey={apiKey} />}
+          {currentView === View.VOICE && (
+            <LiveVoiceView
+              onAddNote={addNote}
+              voiceSettings={voiceSettings}
+              systemInstruction={dynamicSystemInstruction}
+              avatarUrl={avatarUrl}
+              apiKey={apiKey}
+              voiceProvider={voiceProvider}
+            />
+          )}
           {currentView === View.NOTES && <SessionNotes notes={sessionNotes} onDelete={deleteNote} onClear={clearAllNotes} />}
           {currentView === View.SETTINGS && (
             <SettingsView
@@ -241,6 +259,8 @@ const App: React.FC = () => {
               onResetName={() => setCurrentView(View.WELCOME)}
               apiKey={apiKey}
               onApiKeyChange={setApiKey}
+              voiceProvider={voiceProvider}
+              onVoiceProviderChange={setVoiceProvider}
             />
           )}
           {currentView === View.ATTUNEMENTS && <AttunementsView activeModuleIds={activeModuleIds} onToggleModule={toggleModule} onBack={() => setCurrentView(View.HOME)} />}
