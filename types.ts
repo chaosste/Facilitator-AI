@@ -12,7 +12,7 @@ export enum View {
 export interface VoiceSettings {
   voiceName: string;
   gender: 'feminine' | 'masculine';
-  accent: 'UK';
+  accent: 'UK' | 'Levantine-English';
 }
 
 export interface SpecialistModule {

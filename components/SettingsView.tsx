@@ -13,20 +13,11 @@ interface SettingsViewProps {
 const SettingsView: React.FC<SettingsViewProps> = ({ settings, onUpdate, onResetName }) => {
   const [isPreviewLoading, setIsPreviewLoading] = useState(false);
 
-  // Simplified selection logic for UK Male/Female
-  const selectFemale = () => {
+  const selectProfile = (gender: VoiceSettings['gender'], accent: VoiceSettings['accent']) => {
     onUpdate({
-      voiceName: 'Kore',
-      gender: 'feminine',
-      accent: 'UK'
-    });
-  };
-
-  const selectMale = () => {
-    onUpdate({
-      voiceName: 'Puck',
-      gender: 'masculine',
-      accent: 'UK'
+      voiceName: gender === 'feminine' ? 'Kore' : 'Puck',
+      gender,
+      accent
     });
   };
 
@@ -60,7 +51,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ settings, onUpdate, onReset
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const response = await ai.models.generateContent({
         model: "gemini-2.5-flash-preview-tts",
-        contents: [{ parts: [{ text: `I am your Facilitator. This is my ${settings.gender} voice.` }] }],
+        contents: [{ parts: [{ text: `I am your Facilitator. This is my ${settings.gender} voice with a ${settings.accent} style.` }] }],
         config: {
           responseModalities: [Modality.AUDIO],
           speechConfig: {
@@ -112,9 +103,9 @@ const SettingsView: React.FC<SettingsViewProps> = ({ settings, onUpdate, onReset
             <label className="text-[9px] font-black text-[#2c3e50]/30 uppercase tracking-[0.4em] block text-center">Auditory Presence</label>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <button
-                onClick={selectFemale}
+                onClick={() => selectProfile('feminine', 'UK')}
                 className={`py-8 px-6 rounded-[2rem] border transition-all duration-700 flex flex-col items-center gap-4 ${
-                  settings.gender === 'feminine' 
+                  settings.gender === 'feminine' && settings.accent === 'UK'
                     ? 'border-[#96adb3] bg-white shadow-lg text-[#2c3e50]' 
                     : 'border-[#96adb3]/10 bg-white/40 text-[#2c3e50]/30 hover:border-[#96adb3]/30'
                 }`}
@@ -124,15 +115,39 @@ const SettingsView: React.FC<SettingsViewProps> = ({ settings, onUpdate, onReset
               </button>
 
               <button
-                onClick={selectMale}
+                onClick={() => selectProfile('masculine', 'UK')}
                 className={`py-8 px-6 rounded-[2rem] border transition-all duration-700 flex flex-col items-center gap-4 ${
-                  settings.gender === 'masculine' 
+                  settings.gender === 'masculine' && settings.accent === 'UK'
                     ? 'border-[#96adb3] bg-white shadow-lg text-[#2c3e50]' 
                     : 'border-[#96adb3]/10 bg-white/40 text-[#2c3e50]/30 hover:border-[#96adb3]/30'
                 }`}
               >
                 <span className="text-4xl">🌿</span>
                 <span className="text-xs font-black uppercase tracking-[0.3em]">Male (UK)</span>
+              </button>
+
+              <button
+                onClick={() => selectProfile('feminine', 'Levantine-English')}
+                className={`py-8 px-6 rounded-[2rem] border transition-all duration-700 flex flex-col items-center gap-4 ${
+                  settings.gender === 'feminine' && settings.accent === 'Levantine-English'
+                    ? 'border-[#96adb3] bg-white shadow-lg text-[#2c3e50]'
+                    : 'border-[#96adb3]/10 bg-white/40 text-[#2c3e50]/30 hover:border-[#96adb3]/30'
+                }`}
+              >
+                <span className="text-4xl">🪷</span>
+                <span className="text-xs font-black uppercase tracking-[0.3em]">Female (Levantine)</span>
+              </button>
+
+              <button
+                onClick={() => selectProfile('masculine', 'Levantine-English')}
+                className={`py-8 px-6 rounded-[2rem] border transition-all duration-700 flex flex-col items-center gap-4 ${
+                  settings.gender === 'masculine' && settings.accent === 'Levantine-English'
+                    ? 'border-[#96adb3] bg-white shadow-lg text-[#2c3e50]'
+                    : 'border-[#96adb3]/10 bg-white/40 text-[#2c3e50]/30 hover:border-[#96adb3]/30'
+                }`}
+              >
+                <span className="text-4xl">🜁</span>
+                <span className="text-xs font-black uppercase tracking-[0.3em]">Male (Levantine)</span>
               </button>
             </div>
           </div>

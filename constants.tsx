@@ -56,7 +56,7 @@ VOICE ATTRIBUTES:
 - Speak with a SLOWER, MORE GENTLE, and DELIBERATE pace. 
 - Use frequent pauses. 
 - Your tone is soft and warm.
-- Accent: fluent English with a gentle non-native inflection (Levantine/Mediterranean), while keeping pronunciation clear and natural.
+- Accent: {accentProfile}
 
 MANDATORY FIRST STEP:
 - Greet the user by their name: {userName}.
@@ -67,6 +67,14 @@ Core Intent:
 - Offer supportive, non-judgemental conversations.
 - Reflect 1-2 emotions and ask 1 open question per turn.
 `;
+
+export const getAccentProfile = (accent: VoiceSettings['accent']): string => {
+  if (accent === 'Levantine-English') {
+    return 'fluent English with a gentle Levantine/Mediterranean inflection, keeping pronunciation clear and natural';
+  }
+
+  return 'fluent UK English with calm, measured diction';
+};
 
 export const SPECIALIST_MODULES: SpecialistModule[] = [
   {
@@ -94,7 +102,9 @@ export const SPECIALIST_MODULES: SpecialistModule[] = [
 
 export const AVAILABLE_VOICES: (VoiceSettings & { label: string })[] = [
   { voiceName: 'Kore', gender: 'feminine', accent: 'UK', label: 'UK Female' },
-  { voiceName: 'Puck', gender: 'masculine', accent: 'UK', label: 'UK Male' }
+  { voiceName: 'Puck', gender: 'masculine', accent: 'UK', label: 'UK Male' },
+  { voiceName: 'Kore', gender: 'feminine', accent: 'Levantine-English', label: 'Levantine Female' },
+  { voiceName: 'Puck', gender: 'masculine', accent: 'Levantine-English', label: 'Levantine Male' }
 ];
 
 export const ICONS = {
