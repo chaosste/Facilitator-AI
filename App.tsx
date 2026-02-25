@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { View, SessionNote, VoiceSettings } from './types';
-import { ICONS, BASE_SYSTEM_INSTRUCTION, SPECIALIST_MODULES, AVATARS } from './constants';
+import { ICONS, BASE_SYSTEM_INSTRUCTION, SPECIALIST_MODULES, AVATARS, getAccentProfile } from './constants';
 import ChatView from './components/ChatView';
 import LiveVoiceView from './components/LiveVoiceView';
 import SessionNotes from './components/SessionNotes';
@@ -26,7 +26,8 @@ const App: React.FC = () => {
 
   const dynamicSystemInstruction = useMemo(() => {
     let instruction = BASE_SYSTEM_INSTRUCTION
-      .replace(/{userName}/g, userName || 'friend');
+      .replace(/{userName}/g, userName || 'friend')
+      .replace(/{accentProfile}/g, getAccentProfile(voiceSettings.accent));
     activeModuleIds.forEach(id => {
       const mod = SPECIALIST_MODULES.find(m => m.id === id);
       if (mod) {
@@ -34,7 +35,7 @@ const App: React.FC = () => {
       }
     });
     return instruction;
-  }, [activeModuleIds, userName]);
+  }, [activeModuleIds, userName, voiceSettings.accent]);
 
   const avatarUrl = useMemo(() => {
     return AVATARS[voiceSettings.gender];
