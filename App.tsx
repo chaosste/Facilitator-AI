@@ -41,27 +41,27 @@ const App: React.FC = () => {
   }, [voiceSettings.gender]);
 
   useEffect(() => {
-    const savedName = localStorage.getItem('counselai_username');
+    const savedName = localStorage.getItem('facilitatorai_username') ?? localStorage.getItem('counselai_username');
     if (savedName) {
       setUserName(savedName);
       setCurrentView(View.HOME);
     }
 
-    const savedNotes = localStorage.getItem('counselai_notes');
+    const savedNotes = localStorage.getItem('facilitatorai_notes') ?? localStorage.getItem('counselai_notes');
     if (savedNotes) {
       try {
         setSessionNotes(JSON.parse(savedNotes));
       } catch (e) { console.error("Failed to parse notes", e); }
     }
 
-    const savedSettings = localStorage.getItem('counselai_voice_settings');
+    const savedSettings = localStorage.getItem('facilitatorai_voice_settings') ?? localStorage.getItem('counselai_voice_settings');
     if (savedSettings) {
       try {
         setVoiceSettings(JSON.parse(savedSettings));
       } catch (e) { console.error("Failed to parse voice settings", e); }
     }
 
-    const savedModules = localStorage.getItem('counselai_active_modules');
+    const savedModules = localStorage.getItem('facilitatorai_active_modules') ?? localStorage.getItem('counselai_active_modules');
     if (savedModules) {
       try {
         setActiveModuleIds(JSON.parse(savedModules));
@@ -70,19 +70,19 @@ const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (userName) localStorage.setItem('counselai_username', userName);
+    if (userName) localStorage.setItem('facilitatorai_username', userName);
   }, [userName]);
 
   useEffect(() => {
-    localStorage.setItem('counselai_notes', JSON.stringify(sessionNotes));
+    localStorage.setItem('facilitatorai_notes', JSON.stringify(sessionNotes));
   }, [sessionNotes]);
 
   useEffect(() => {
-    localStorage.setItem('counselai_voice_settings', JSON.stringify(voiceSettings));
+    localStorage.setItem('facilitatorai_voice_settings', JSON.stringify(voiceSettings));
   }, [voiceSettings]);
 
   useEffect(() => {
-    localStorage.setItem('counselai_active_modules', JSON.stringify(activeModuleIds));
+    localStorage.setItem('facilitatorai_active_modules', JSON.stringify(activeModuleIds));
   }, [activeModuleIds]);
 
   const addNote = (note: SessionNote) => {

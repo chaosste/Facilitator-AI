@@ -169,7 +169,7 @@ const server = http.createServer(async (req, res) => {
   if (req.method === 'GET' && req.url && req.url.startsWith('/api/health')) {
     return sendJson(res, 200, {
       status: 'ok',
-      service: 'facilitator-ai',
+      service: 'facilitatorai',
       time: new Date().toISOString()
     });
   }
