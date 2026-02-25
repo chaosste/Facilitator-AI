@@ -186,7 +186,7 @@ const App: React.FC = () => {
             <img src={avatarUrl} alt="Facilitator Avatar" className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700" />
           </div>
           <div className="flex flex-col">
-            <h1 className="text-2xl font-medium text-[#2c3e50] font-serif tracking-widest uppercase">Facilitator-AI</h1>
+            <h1 className="text-2xl font-medium text-[#2c3e50] font-serif tracking-widest uppercase">Facilitator AI</h1>
             <span className="text-[8px] uppercase tracking-[0.2em] text-[#96adb3] font-bold">Sitting with: {userName}</span>
           </div>
         </div>

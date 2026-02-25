@@ -246,7 +246,7 @@ const server = http.createServer(async (req, res) => {
     );
     return sendJson(res, 200, {
       status: 'ok',
-      service: 'facilitator-ai',
+      service: 'facilitatorai',
       realtimeConfigured,
       time: new Date().toISOString()
     });
