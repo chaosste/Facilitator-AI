@@ -173,7 +173,7 @@ const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({
           stopSession();
         }, 15000);
 
-        const voice = voiceSettings.gender === 'masculine' ? 'alloy' : 'verse';
+        const voice = 'verse';
         sessionRef.current = await connectAzureRealtimeSession(systemInstruction, voice, {
           onOpen: () => {
             if (connectTimeoutRef.current) {
