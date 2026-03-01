@@ -3,46 +3,138 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Facilitator-AI</title>
+  <title>Facilitator-AI — The Unreal Retreat Guru</title>
   <link rel="icon" type="image/jpeg" href="https://storage.cloud.google.com/ai-studio-bucket-572556903588-us-west1/services/counsellor_ai_images/facilitator-male.jpg">
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            forest:    { DEFAULT: '#3d5a4c', deep: '#2d4a3c', light: '#4a6d5b' },
+            sage:      { DEFAULT: '#6b8f71', light: '#8fb094', pale: '#d4e2d0' },
+            parchment: { DEFAULT: '#f0ebe3', light: '#f7f4ee' },
+            card:      '#faf7f2',
+            amber:     { DEFAULT: '#c7935f', light: '#dbb58a', dark: '#a87a4a' },
+            charcoal:  '#2a2a2a',
+            stone:     { DEFAULT: '#7a7a6e', light: '#a8a89c' },
+            crisis:    { DEFAULT: '#c0392b', light: '#fdf2f0', dark: '#a33225' },
+          },
+        }
+      }
+    }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Karla:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: 'Inter', sans-serif;
-      background-color: #fdfaf6;
-      color: #2c3e50;
+      font-family: 'Karla', sans-serif;
+      background-color: #f0ebe3;
+      color: #2a2a2a;
     }
-    .font-serif {
-      font-family: 'Playfair Display', serif;
+    .font-display {
+      font-family: 'Cormorant Garamond', serif;
     }
-    .mystic-glass {
-      background: rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(150, 173, 179, 0.2);
-    }
-    .duck-egg-glow {
-      box-shadow: 0 0 30px rgba(150, 173, 179, 0.15);
-    }
-    .aura-bg {
-      background: radial-gradient(circle at top right, rgba(150, 173, 179, 0.08), transparent),
-                  radial-gradient(circle at bottom left, rgba(253, 250, 246, 1), transparent);
+
+    /* --- Background --- */
+    .ground-bg {
+      background:
+        radial-gradient(ellipse at 15% 0%, rgba(61,90,76,0.05) 0%, transparent 55%),
+        radial-gradient(ellipse at 85% 100%, rgba(199,147,95,0.05) 0%, transparent 55%),
+        #f0ebe3;
       background-attachment: fixed;
     }
-    ::-webkit-scrollbar {
-      width: 6px;
+
+    /* --- Glass surfaces --- */
+    .ground-glass {
+      background: rgba(250,247,242,0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
     }
-    ::-webkit-scrollbar-track {
-      background: #fdfaf6;
+
+    /* --- Scrollbar --- */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #8fb094; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #6b8f71; }
+
+    /* --- Range slider --- */
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      height: 4px;
+      border-radius: 2px;
+      background: rgba(61,90,76,0.12);
+      outline: none;
     }
-    ::-webkit-scrollbar-thumb {
-      background: #96adb3;
-      border-radius: 10px;
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #3d5a4c;
+      cursor: pointer;
+      border: 2.5px solid #faf7f2;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+      box-shadow: 0 2px 8px rgba(61,90,76,0.25);
+    }
+    input[type="range"]::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #3d5a4c;
+      cursor: pointer;
+      border: 2.5px solid #faf7f2;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+    }
+
+    /* --- Animations --- */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    @keyframes breathe {
+      0%, 100% { transform: scale(1); }
+      50%      { transform: scale(1.04); }
+    }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .anim-fade-up  { animation: fadeInUp 0.7s ease-out both; }
+    .anim-fade     { animation: fadeIn 0.5s ease-out both; }
+    .anim-scale    { animation: scaleIn 0.4s ease-out both; }
+    .anim-breathe  { animation: breathe 5s ease-in-out infinite; }
+    .anim-slide-down { animation: slideDown 0.4s ease-out both; }
+    .anim-delay-1 { animation-delay: 0.08s; }
+    .anim-delay-2 { animation-delay: 0.16s; }
+    .anim-delay-3 { animation-delay: 0.24s; }
+    .anim-delay-4 { animation-delay: 0.32s; }
+    .anim-delay-5 { animation-delay: 0.40s; }
+    .anim-delay-6 { animation-delay: 0.48s; }
+
+    /* --- Focus ring --- */
+    *:focus-visible {
+      outline: 2px solid #6b8f71;
+      outline-offset: 2px;
+      border-radius: 4px;
     }
   </style>
-<script type="importmap">
+  <script type="importmap">
 {
   "imports": {
     "react": "https://esm.sh/react@^19.2.3",
@@ -51,9 +143,10 @@
     "@google/genai": "https://esm.sh/@google/genai@^1.34.0"
   }
 }
-</script>
+  </script>
 </head>
-<body class="aura-bg">
+<body class="ground-bg">
   <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
 </body>
 </html>

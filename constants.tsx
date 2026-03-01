@@ -7,54 +7,53 @@ export const AVATARS = {
   masculine: 'https://storage.googleapis.com/ai-studio-bucket-572556903588-us-west1/services/counsellor_ai_images/facilitator-male.jpg'
 };
 
-// Using more reliable public domain audio sources to prevent "no supported source" errors
 export const AMBIENT_TRACKS: AmbientTrack[] = [
   {
     id: 'forest',
     name: 'Ancient Forest',
-    icon: '🌲',
+    icon: '\u{1F332}',
     url: 'https://actions.google.com/sounds/v1/ambiences/forest_morning_birds.ogg',
     description: 'Deep resonance of old growth and rustling leaves.'
   },
   {
     id: 'rain',
     name: 'Gentle Rain',
-    icon: '🌧️',
+    icon: '\u{1F327}\u{FE0F}',
     url: 'https://actions.google.com/sounds/v1/ambiences/soft_rain_on_umbrella.ogg',
     description: 'A soft pitter-patter to cleanse the mind.'
   },
   {
     id: 'cosmic',
     name: 'Cosmic Drift',
-    icon: '✨',
+    icon: '\u{2728}',
     url: 'https://actions.google.com/sounds/v1/science_fiction/deep_space.ogg',
     description: 'Ethereal soundscapes for transcendence and space.'
   },
   {
     id: 'waves',
     name: 'Ocean Breath',
-    icon: '🌊',
+    icon: '\u{1F30A}',
     url: 'https://actions.google.com/sounds/v1/ambiences/ocean_waves.ogg',
     description: 'Rhythmic tides mirroring the flow of life.'
   },
   {
     id: 'brook',
     name: 'Gentle Brook',
-    icon: '💧',
+    icon: '\u{1F4A7}',
     url: 'https://actions.google.com/sounds/v1/ambiences/river_flowing.ogg',
     description: 'Continuous flow of clear water over stones.'
   }
 ];
 
 export const BASE_SYSTEM_INSTRUCTION = `
-You are “Facilitator-AI”—a conversational counsellor. Your foundation is built on the 9 core counselling skills (UCP framework).
+You are "Facilitator-AI"\u2014a conversational counsellor. Your foundation is built on the 9 core counselling skills (UCP framework).
 
 Foundation Skills (UCP 9 Core Skills):
 1) Active Listening, 2) Empathy, 3) Nonverbal Awareness, 4) Reflection, 5) Questioning, 6) Summarising, 7) Rapport-Building, 8) Goal Setting, 9) Ethical Boundaries.
 
 VOICE ATTRIBUTES:
-- Speak with a SLOWER, MORE GENTLE, and DELIBERATE pace. 
-- Use frequent pauses. 
+- Speak with a SLOWER, MORE GENTLE, and DELIBERATE pace.
+- Use frequent pauses.
 - Your tone is soft and warm.
 - Accent: {accentProfile}
 
@@ -72,7 +71,6 @@ export const getAccentProfile = (accent: VoiceSettings['accent']): string => {
   if (accent === 'Levantine-English') {
     return 'fluent English with a gentle Levantine/Mediterranean inflection, keeping pronunciation clear and natural';
   }
-
   return 'fluent UK English with calm, measured diction';
 };
 
@@ -80,21 +78,21 @@ export const SPECIALIST_MODULES: SpecialistModule[] = [
   {
     id: 'integration',
     name: 'Psychedelic Integration',
-    icon: '🌀',
+    icon: '\u{1F300}',
     description: 'Expertise in navigating altered states and integrating visionary experiences.',
     systemInstruction: `ADDITIONAL MODULE: PSYCHEDELIC INTEGRATION SPECIALIZATION...`
   },
   {
     id: 'sharing',
     name: 'Sharing Circles',
-    icon: '⭕',
+    icon: '\u{2B55}',
     description: 'Philosophy of safe group integration based on AyaSafe guidelines.',
     systemInstruction: `STRICT WORKFLOW MODULE: SHARING CIRCLES FACILITATION...`
   },
   {
     id: 'harm_reduction',
     name: 'Harm Reduction',
-    icon: '🛡️',
+    icon: '\u{1F6E1}\u{FE0F}',
     description: 'Specialist safety protocols for ontological shock and trauma-informed care.',
     systemInstruction: `ADDITIONAL MODULE: HARM REDUCTION & EXISTENTIAL SUPPORT...`
   }
@@ -107,46 +105,185 @@ export const AVAILABLE_VOICES: (VoiceSettings & { label: string })[] = [
   { voiceName: 'Puck', gender: 'masculine', accent: 'Levantine-English', label: 'Levantine Male' }
 ];
 
+// --- SVG Icon Components ---
+const svgBase = { xmlns: "http://www.w3.org/2000/svg", fill: "none", viewBox: "0 0 24 24", strokeWidth: 1.5, stroke: "currentColor" };
+
 export const ICONS = {
-  Chat: () => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
-    </svg>
-  ),
-  Mic: () => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" />
-    </svg>
-  ),
-  Note: () => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+  Logo: ({ size = 22 }: { size?: number } = {}) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" style={{ width: size, height: size }}>
+      {/* Cupped hands */}
+      <path stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+        d="M7 16.5c-1.5-.8-3-2.5-3-5 0-1.8 1-3.2 2.2-4M17 16.5c1.5-.8 3-2.5 3-5 0-1.8-1-3.2-2.2-4" />
+      {/* Seedling / flame */}
+      <path stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+        d="M12 20v-6" />
+      <path stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+        d="M12 14c0-3.5 2.5-5.5 2.5-8.5C14.5 3 12 2 12 2s-2.5 1-2.5 3.5C9.5 8.5 12 10.5 12 14z" />
+      {/* Small leaves */}
+      <path stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"
+        d="M12 16c-1.2-.3-3-.2-3.5 1.5M12 16c1.2-.3 3-.2 3.5 1.5" />
     </svg>
   ),
   Home: () => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+    <svg {...svgBase} className="w-[22px] h-[22px]">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955a1.126 1.126 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
     </svg>
   ),
-  Settings: () => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
-      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+  Chat: () => (
+    <svg {...svgBase} className="w-[22px] h-[22px]">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M20 2H4a2 2 0 00-2 2v12a2 2 0 002 2h3l5 4 5-4h3a2 2 0 002-2V4a2 2 0 00-2-2z" />
+      <path strokeLinecap="round" d="M8 9h8M8 13h5" />
     </svg>
   ),
-  Info: () => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-red-500">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+  Mic: () => (
+    <svg {...svgBase} className="w-[22px] h-[22px]">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 2a3 3 0 00-3 3v7a3 3 0 006 0V5a3 3 0 00-3-3zM19 10v2a7 7 0 01-14 0v-2M12 19v3M8 22h8" />
     </svg>
   ),
-  Lotus: () => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v18m0-18l3 3m-3-3l-3 3m0 12l3 3m-3-3l3-3m-6-6h12m-12 0l3-3m-3 3l3 3m6 6l-3 3m3-3l-3-3" />
+  Book: () => (
+    <svg {...svgBase} className="w-[22px] h-[22px]">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2zM22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z" />
+    </svg>
+  ),
+  Leaf: () => (
+    <svg {...svgBase} className="w-[22px] h-[22px]">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M11 20A7 7 0 019.8 6.9C15.5 6.9 20 3 20 3s-3 4.5-3 10.1A4.94 4.94 0 0111 20zM6.7 17.3l9.6-9.6" />
+    </svg>
+  ),
+  Sliders: () => (
+    <svg {...svgBase} className="w-[22px] h-[22px]">
+      <path strokeLinecap="round" d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6" />
+    </svg>
+  ),
+  LifeBuoy: () => (
+    <svg {...svgBase} className="w-[22px] h-[22px]">
+      <circle cx="12" cy="12" r="10" />
+      <circle cx="12" cy="12" r="4" />
+      <path strokeLinecap="round" d="M4.93 4.93l4.24 4.24M14.83 14.83l4.24 4.24M14.83 9.17l4.24-4.24M4.93 19.07l4.24-4.24" />
+    </svg>
+  ),
+  X: () => (
+    <svg {...svgBase} className="w-5 h-5">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12" />
     </svg>
   ),
   Play: () => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
+    <svg {...svgBase} className="w-5 h-5">
+      <polygon points="5,3 19,12 5,21" fill="currentColor" stroke="none" />
     </svg>
-  )
+  ),
+  Pause: () => (
+    <svg {...svgBase} className="w-5 h-5">
+      <rect x="6" y="4" width="4" height="16" rx="1" fill="currentColor" stroke="none" />
+      <rect x="14" y="4" width="4" height="16" rx="1" fill="currentColor" stroke="none" />
+    </svg>
+  ),
+  Send: () => (
+    <svg {...svgBase} className="w-5 h-5">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M22 2L11 13M22 2l-7 20-4-9-9-4z" />
+    </svg>
+  ),
+  Check: () => (
+    <svg {...svgBase} className="w-5 h-5">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 6L9 17l-5-5" />
+    </svg>
+  ),
+  ArrowLeft: () => (
+    <svg {...svgBase} className="w-5 h-5">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19 12H5M12 19l-7-7 7-7" />
+    </svg>
+  ),
+  Trash: () => (
+    <svg {...svgBase} className="w-5 h-5">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6" />
+    </svg>
+  ),
+  Key: () => (
+    <svg {...svgBase} className="w-5 h-5">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 11-7.778 7.778 5.5 5.5 0 017.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4" />
+    </svg>
+  ),
+  User: () => (
+    <svg {...svgBase} className="w-5 h-5">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+      <circle cx="12" cy="7" r="4" />
+    </svg>
+  ),
+  Eye: () => (
+    <svg {...svgBase} className="w-5 h-5">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  ),
+  EyeOff: () => (
+    <svg {...svgBase} className="w-5 h-5">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24" />
+      <path strokeLinecap="round" d="M1 1l22 22" />
+    </svg>
+  ),
+  Volume: () => (
+    <svg {...svgBase} className="w-5 h-5">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M11 5L6 9H2v6h4l5 4V5z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15.54 8.46a5 5 0 010 7.07" />
+    </svg>
+  ),
+  ExternalLink: () => (
+    <svg {...svgBase} className="w-4 h-4">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3" />
+    </svg>
+  ),
+  Heart: () => (
+    <svg {...svgBase} className="w-4 h-4">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
+    </svg>
+  ),
+  Info: () => (
+    <svg {...svgBase} className="w-5 h-5">
+      <circle cx="12" cy="12" r="10" />
+      <path strokeLinecap="round" d="M12 16v-4M12 8h.01" />
+    </svg>
+  ),
+  Phone: () => (
+    <svg {...svgBase} className="w-5 h-5">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" />
+    </svg>
+  ),
+  Globe: () => (
+    <svg {...svgBase} className="w-4 h-4">
+      <circle cx="12" cy="12" r="10" />
+      <path strokeLinecap="round" d="M2 12h20" />
+      <path strokeLinecap="round" d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" />
+    </svg>
+  ),
+  Clock: () => (
+    <svg {...svgBase} className="w-4 h-4">
+      <circle cx="12" cy="12" r="10" />
+      <path strokeLinecap="round" d="M12 6v6l4 2" />
+    </svg>
+  ),
+  Shield: () => (
+    <svg {...svgBase} className="w-5 h-5">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+    </svg>
+  ),
+  Coffee: () => (
+    <svg {...svgBase} className="w-4 h-4">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8zM6 1v3M10 1v3M14 1v3" />
+    </svg>
+  ),
+  Note: () => (
+    <svg {...svgBase} className="w-[22px] h-[22px]">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2zM22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z" />
+    </svg>
+  ),
+  Settings: () => (
+    <svg {...svgBase} className="w-[22px] h-[22px]">
+      <path strokeLinecap="round" d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6" />
+    </svg>
+  ),
+  Lotus: () => (
+    <svg {...svgBase} className="w-[22px] h-[22px]">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M11 20A7 7 0 019.8 6.9C15.5 6.9 20 3 20 3s-3 4.5-3 10.1A4.94 4.94 0 0111 20zM6.7 17.3l9.6-9.6" />
+    </svg>
+  ),
 };

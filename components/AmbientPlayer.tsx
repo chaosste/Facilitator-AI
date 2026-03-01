@@ -14,7 +14,7 @@ const AmbientPlayer: React.FC<AmbientPlayerProps> = ({ isOpen, onClose }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [freqData, setFreqData] = useState<number[]>(new Array(6).fill(0));
   const [loadError, setLoadError] = useState<string | null>(null);
-  
+
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
@@ -52,12 +52,15 @@ const AmbientPlayer: React.FC<AmbientPlayerProps> = ({ isOpen, onClose }) => {
 
   useEffect(() => {
     if (isPlaying) updateVisualizer();
-    else { if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current); setFreqData(new Array(6).fill(0)); }
+    else {
+      if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
+      setFreqData(new Array(6).fill(0));
+    }
     return () => { if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current); };
   }, [isPlaying]);
 
   const handleAudioError = () => {
-    setLoadError("Atmosphere could not be aligned. Check connection.");
+    setLoadError("Could not load this soundscape. Check your connection.");
     setIsPlaying(false);
   };
 
@@ -81,59 +84,78 @@ const AmbientPlayer: React.FC<AmbientPlayerProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="absolute top-24 right-8 w-80 max-h-[75vh] bg-white/95 backdrop-blur-2xl border border-[#96adb3]/30 rounded-[3rem] shadow-2xl z-[100] p-8 animate-in fade-in zoom-in duration-500 flex flex-col">
-      <div className="flex justify-between items-center mb-8">
-        <div className="flex items-center gap-3">
-           <ICONS.Lotus />
-           <h3 className="text-[10px] font-black text-[#96adb3] uppercase tracking-[0.4em]">Atmosphere</h3>
+    <div className="absolute top-[72px] right-4 md:right-8 w-[320px] max-h-[75vh] bg-card/98 backdrop-blur-2xl border border-forest/12 rounded-2xl shadow-xl shadow-charcoal/[0.06] z-[100] flex flex-col anim-slide-down overflow-hidden">
+
+      {/* Header */}
+      <div className="flex justify-between items-center px-6 pt-5 pb-4 border-b border-forest/6">
+        <div className="flex items-center gap-2.5 text-forest">
+          <ICONS.Leaf />
+          <h3 className="text-[10px] font-bold uppercase tracking-[0.3em]">Atmosphere</h3>
         </div>
-        <button onClick={onClose} className="text-[#2c3e50]/30 hover:text-[#96adb3] p-2 hover:bg-[#96adb3]/10 rounded-full transition-all">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+        <button onClick={onClose} className="text-stone-light hover:text-forest p-1.5 hover:bg-forest/5 rounded-lg transition-all active:scale-90">
+          <ICONS.X />
         </button>
       </div>
 
       {loadError && (
-        <div className="mb-4 p-3 bg-red-50 text-red-500 text-[10px] uppercase font-bold tracking-widest rounded-xl text-center">
+        <div className="mx-5 mt-3 p-3 bg-crisis-light text-crisis text-[10px] uppercase font-bold tracking-widest rounded-xl text-center">
           {loadError}
         </div>
       )}
 
-      <div className="flex-1 overflow-y-auto pr-2 space-y-4 custom-scrollbar">
+      {/* Track List */}
+      <div className="flex-1 overflow-y-auto px-3 py-3 space-y-1.5">
         {AMBIENT_TRACKS.map((track) => {
           const active = currentTrack?.id === track.id;
+          const playing = active && isPlaying;
           return (
             <button
               key={track.id}
               onClick={() => toggleTrack(track)}
-              className={`w-full flex items-center gap-6 p-6 rounded-[2.5rem] border transition-all duration-700 text-left relative group ${
-                active && isPlaying ? 'bg-white border-[#96adb3] shadow-md' : 'bg-white/40 border-transparent hover:border-[#96adb3]/20'
+              className={`w-full flex items-center gap-4 p-4 rounded-xl border transition-all duration-500 text-left group active:scale-[0.98] ${
+                playing
+                  ? 'bg-forest/5 border-forest/20 shadow-sm'
+                  : 'bg-transparent border-transparent hover:bg-parchment-light hover:border-forest/8'
               }`}
             >
-              <div className={`text-6xl transition-transform duration-1000 ${active && isPlaying ? 'scale-110' : 'opacity-40'}`}>{track.icon}</div>
-              <div className="flex-1 space-y-1">
-                <span className={`text-[11px] font-black uppercase tracking-widest block ${active && isPlaying ? 'text-[#2c3e50]' : 'text-[#2c3e50]/60'}`}>{track.name}</span>
-                <p className="text-[10px] font-light text-[#2c3e50]/40 leading-tight">{track.description}</p>
+              <div className={`text-3xl transition-all duration-500 ${playing ? 'scale-110' : 'opacity-50 group-hover:opacity-80'}`}>
+                {track.icon}
               </div>
-              {active && isPlaying && (
-                <div className="flex gap-1 items-end h-6 w-10">
-                  {freqData.map((val, i) => (<div key={i} className="flex-1 bg-[#96adb3] rounded-full" style={{ height: `${Math.max(15, (val / 255) * 100)}%` }}></div>))}
+              <div className="flex-1 min-w-0">
+                <span className={`text-[11px] font-bold uppercase tracking-widest block truncate ${playing ? 'text-charcoal' : 'text-stone'}`}>
+                  {track.name}
+                </span>
+                <p className="text-[10px] font-light text-stone-light leading-snug truncate">{track.description}</p>
+              </div>
+              {playing ? (
+                <div className="flex gap-[3px] items-end h-5 w-8 flex-shrink-0">
+                  {freqData.map((val, i) => (
+                    <div
+                      key={i}
+                      className="flex-1 bg-forest rounded-full transition-all duration-75"
+                      style={{ height: `${Math.max(15, (val / 255) * 100)}%` }}
+                    />
+                  ))}
                 </div>
-              )}
+              ) : active ? (
+                <div className="text-stone-light flex-shrink-0"><ICONS.Pause /></div>
+              ) : null}
             </button>
           );
         })}
       </div>
 
-      <div className="mt-8 pt-8 border-t border-[#96adb3]/10 space-y-6">
-        <div className="flex justify-between items-center text-[9px] font-black text-[#96adb3] uppercase tracking-[0.3em]">
-          <span>Silence</span>
-          <span className="text-[#2c3e50] font-serif italic text-sm">{Math.round(volume * 100)}%</span>
-          <span>Immersion</span>
+      {/* Volume Control */}
+      <div className="px-6 pt-4 pb-5 border-t border-forest/6 space-y-3">
+        <div className="flex justify-between items-center text-[9px] font-bold text-stone uppercase tracking-[0.25em]">
+          <span>Quiet</span>
+          <span className="text-charcoal font-display text-sm not-italic">{Math.round(volume * 100)}%</span>
+          <span>Full</span>
         </div>
-        <input 
-          type="range" min="0" max="1" step="0.01" value={volume} 
+        <input
+          type="range" min="0" max="1" step="0.01" value={volume}
           onChange={(e) => setVolume(parseFloat(e.target.value))}
-          className="w-full h-1 bg-[#96adb3]/10 rounded-full appearance-none cursor-pointer accent-[#96adb3] group-hover:bg-[#96adb3]/20 transition-all"
+          className="w-full cursor-pointer"
         />
       </div>
 
