@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { SessionNote } from '../types';
+import { ICONS } from '../constants';
 
 interface SessionNotesProps {
   notes: SessionNote[];
@@ -10,110 +11,128 @@ interface SessionNotesProps {
 
 const SessionNotes: React.FC<SessionNotesProps> = ({ notes, onDelete, onClear }) => {
   return (
-    <div className="h-full flex flex-col space-y-10 overflow-hidden animate-in fade-in duration-1000">
-      <div className="flex justify-between items-end border-b border-[#96adb3]/10 pb-6">
+    <div className="h-full flex flex-col max-w-3xl mx-auto space-y-8 overflow-hidden anim-fade-up">
+
+      {/* Header */}
+      <div className="flex justify-between items-end">
         <div className="space-y-2">
-          <h2 className="text-4xl font-serif italic text-[#2c3e50]">Journal of Becoming</h2>
-          <p className="text-[10px] text-[#2c3e50]/40 uppercase tracking-[0.3em] font-bold">A repository of your internal landscapes.</p>
+          <h2 className="text-3xl font-display italic text-charcoal">Journal</h2>
+          <p className="text-xs text-stone tracking-widest uppercase font-medium">A record of your reflective journey</p>
         </div>
         {notes.length > 0 && (
-          <button 
+          <button
             onClick={onClear}
-            className="text-[9px] uppercase tracking-widest font-bold text-red-400 hover:text-red-600 transition-colors"
+            className="flex items-center gap-2 text-[10px] uppercase tracking-widest font-bold text-crisis/70 hover:text-crisis transition-colors border border-crisis/15 px-4 py-2 rounded-xl hover:bg-crisis/5 active:scale-[0.97]"
           >
-            Purge All Records
+            <ICONS.Trash />
+            Clear All
           </button>
         )}
       </div>
 
-      <div className="flex-1 overflow-y-auto pr-4 space-y-10 pb-12 custom-scrollbar">
+      {/* Notes List */}
+      <div className="flex-1 overflow-y-auto pr-1 space-y-6 pb-12">
         {notes.length === 0 ? (
-          <div className="h-full flex flex-col justify-center items-center text-center p-16 bg-white/40 rounded-[3rem] border border-dashed border-[#96adb3]/20">
-            <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-6 text-[#96adb3]/30 border border-[#96adb3]/10">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="w-8 h-8">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+          <div className="h-full flex flex-col justify-center items-center text-center p-12 bg-card border border-dashed border-forest/12 rounded-2xl anim-fade-up anim-delay-1">
+            <div className="w-14 h-14 bg-parchment-light rounded-xl flex items-center justify-center mb-5 text-stone-light border border-forest/8">
+              <ICONS.Clock />
             </div>
-            <h3 className="text-xl font-serif text-[#2c3e50]/60 mb-2">The pages remain blank.</h3>
-            <p className="text-xs text-[#2c3e50]/30 max-w-xs mx-auto leading-relaxed tracking-wider">
-              Invoke a dialogue or session, then ask CounselAI to "archive our reflection" to populate your journal.
+            <h3 className="text-lg font-display italic text-charcoal/60 mb-2">The pages remain blank</h3>
+            <p className="text-xs text-stone-light max-w-xs mx-auto leading-relaxed tracking-wide">
+              Begin a dialogue or communion session, then ask the facilitator to "archive our reflection" to populate your journal.
             </p>
           </div>
         ) : (
           notes.map((note, idx) => (
-            <div 
-              key={idx} 
-              className="bg-white rounded-[2.5rem] p-10 border border-[#96adb3]/10 group hover:border-[#96adb3]/40 transition-all duration-700 relative overflow-hidden shadow-sm hover:shadow-xl"
+            <div
+              key={idx}
+              className={`bg-card rounded-2xl p-7 md:p-8 border border-forest/8 group hover:border-forest/20 transition-all duration-500 relative overflow-hidden hover:shadow-md anim-fade-up anim-delay-${Math.min(idx + 1, 4)}`}
             >
               {/* Note Header */}
-              <div className="flex justify-between items-start mb-8 border-b border-[#96adb3]/5 pb-8">
-                <div className="space-y-3">
-                  <div className="text-[9px] uppercase tracking-[0.4em] font-black text-[#96adb3] mb-1">
-                    {new Date(note.dateTimeUTC).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+              <div className="flex justify-between items-start mb-6 pb-5 border-b border-forest/5">
+                <div className="space-y-2 flex-1 min-w-0">
+                  <div className="flex items-center gap-2 text-forest">
+                    <ICONS.Clock />
+                    <span className="text-[9px] uppercase tracking-[0.3em] font-bold">
+                      {new Date(note.dateTimeUTC).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                    </span>
                   </div>
-                  <h3 className="text-2xl font-serif italic text-[#2c3e50]">{note.summary}</h3>
+                  <h3 className="text-lg font-display italic text-charcoal leading-snug">{note.summary}</h3>
                 </div>
-                <button 
+                <button
                   onClick={() => onDelete(idx)}
-                  className="p-3 text-[#2c3e50]/10 hover:text-red-500 transition-all rounded-full hover:bg-red-50"
-                  title="Expunge Entry"
+                  className="p-2.5 text-stone-light/40 hover:text-crisis transition-all rounded-xl hover:bg-crisis/5 flex-shrink-0 ml-3"
+                  title="Delete entry"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.255H8.084a2.25 2.25 0 01-2.244-2.255L5.67 6.328m10.88 0a48.108 48.108 0 00-12.82 0m12.82 0V4.5a2.25 2.25 0 00-2.25-2.25h-4.5a2.25 2.25 0 00-2.25 2.25V6.328" />
-                  </svg>
+                  <ICONS.Trash />
                 </button>
               </div>
 
               {/* Note Body */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                <div className="space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-6">
+                  {/* Themes */}
                   <div>
-                    <h4 className="text-[8px] font-black text-[#96adb3] uppercase tracking-[0.4em] mb-4">Core Themes</h4>
+                    <h4 className="text-[9px] font-bold text-forest uppercase tracking-[0.3em] mb-3">Core Themes</h4>
                     <div className="flex flex-wrap gap-2">
                       {note.presentingThemes.map((t, i) => (
-                        <span key={i} className="px-3 py-1.5 bg-[#96adb3]/10 border border-[#96adb3]/20 text-[#96adb3] text-[9px] uppercase tracking-widest rounded-lg font-bold">{t}</span>
+                        <span key={i} className="px-3 py-1.5 bg-forest/5 border border-forest/12 text-forest text-[9px] uppercase tracking-widest rounded-lg font-bold">{t}</span>
                       ))}
                     </div>
                   </div>
-                  <div>
-                    <h4 className="text-[8px] font-black text-[#96adb3] uppercase tracking-[0.4em] mb-4">Aura of Sentiment</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {note.emotionsObserved.map((e, i) => (
-                        <span key={i} className="px-3 py-1.5 bg-[#fdfaf6] border border-[#96adb3]/10 text-[#2c3e50]/60 text-[9px] uppercase tracking-widest rounded-lg">{e}</span>
-                      ))}
+
+                  {/* Emotions */}
+                  {note.emotionsObserved && note.emotionsObserved.length > 0 && (
+                    <div>
+                      <h4 className="text-[9px] font-bold text-forest uppercase tracking-[0.3em] mb-3">Emotional Landscape</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {note.emotionsObserved.map((e, i) => (
+                          <span key={i} className="px-3 py-1.5 bg-parchment-light border border-forest/8 text-stone text-[9px] uppercase tracking-widest rounded-lg">{e}</span>
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
 
-                <div className="space-y-8">
-                  <div>
-                    <h4 className="text-[8px] font-black text-[#96adb3] uppercase tracking-[0.4em] mb-4">Whispers of Truth</h4>
-                    <div className="p-6 bg-[#fdfaf6] rounded-[2rem] italic text-[#2c3e50]/70 text-sm border-l-2 border-[#96adb3] leading-relaxed tracking-wide font-light">
-                      "{note.keyQuotes[0] || "Silence is sometimes the loudest reflection."}"
+                <div className="space-y-6">
+                  {/* Key Quotes */}
+                  {note.keyQuotes && note.keyQuotes.length > 0 && (
+                    <div>
+                      <h4 className="text-[9px] font-bold text-forest uppercase tracking-[0.3em] mb-3">Reflections</h4>
+                      <div className="p-5 bg-parchment-light rounded-xl italic text-charcoal/70 text-sm border-l-2 border-forest leading-relaxed tracking-wide font-light">
+                        &ldquo;{note.keyQuotes[0] || "Silence is sometimes the loudest reflection."}&rdquo;
+                      </div>
                     </div>
-                  </div>
-                  <div>
-                    <h4 className="text-[8px] font-black text-[#96adb3] uppercase tracking-[0.4em] mb-4">Intentions Forward</h4>
-                    <ul className="space-y-3">
-                      {note.goalsNextSteps.map((step, i) => (
-                        <li key={i} className="text-[11px] text-[#2c3e50]/60 flex gap-4 items-start tracking-wide leading-relaxed">
-                          <span className="text-[#96adb3] text-xs font-bold">•</span>
-                          {step}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                  )}
+
+                  {/* Goals */}
+                  {note.goalsNextSteps && note.goalsNextSteps.length > 0 && (
+                    <div>
+                      <h4 className="text-[9px] font-bold text-forest uppercase tracking-[0.3em] mb-3">Intentions Forward</h4>
+                      <ul className="space-y-2.5">
+                        {note.goalsNextSteps.map((step, i) => (
+                          <li key={i} className="text-xs text-stone flex gap-3 items-start tracking-wide leading-relaxed">
+                            <span className="text-forest text-xs font-bold mt-0.5">&#x2022;</span>
+                            {step}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
               </div>
 
-              <div className="mt-12 pt-6 border-t border-[#96adb3]/5 flex justify-between items-center opacity-30 group-hover:opacity-100 transition-opacity duration-700">
-                <div className="flex gap-3">
-                  {note.skillsApplied.map((skill, i) => (
-                    <span key={i} className="text-[8px] uppercase tracking-widest text-[#2c3e50]/40 bg-[#fdfaf6] px-2 py-1 rounded-full border border-[#96adb3]/10">{skill}</span>
-                  ))}
+              {/* Footer */}
+              {note.skillsApplied && note.skillsApplied.length > 0 && (
+                <div className="mt-8 pt-5 border-t border-forest/5 flex flex-wrap justify-between items-center gap-3 opacity-40 group-hover:opacity-100 transition-opacity duration-500">
+                  <div className="flex flex-wrap gap-2">
+                    {note.skillsApplied.map((skill, i) => (
+                      <span key={i} className="text-[8px] uppercase tracking-widest text-stone bg-parchment-light px-2.5 py-1 rounded-full border border-forest/8">{skill}</span>
+                    ))}
+                  </div>
+                  <span className="text-[8px] uppercase tracking-[0.25em] text-forest/60 font-bold italic">UCP Core Skills</span>
                 </div>
-                <span className="text-[8px] uppercase tracking-[0.3em] text-[#96adb3] font-black italic">UCP Core Skills Foundation</span>
-              </div>
+              )}
             </div>
           ))
         )}

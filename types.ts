@@ -15,6 +15,11 @@ export interface VoiceSettings {
   accent: 'UK' | 'Levantine-English';
 }
 
+export interface ApiKeys {
+  gemini: string;
+  claude: string;
+}
+
 export interface SpecialistModule {
   id: string;
   name: string;

@@ -2,12 +2,14 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { GoogleGenAI, LiveServerMessage, Modality, Blob, FunctionDeclaration, Type } from '@google/genai';
 import { SessionNote, VoiceSettings } from '../types';
+import { ICONS } from '../constants';
 
 interface LiveVoiceViewProps {
   onAddNote: (note: SessionNote) => void;
   voiceSettings: VoiceSettings;
   systemInstruction: string;
   avatarUrl: string;
+  geminiApiKey: string;
 }
 
 const BELL_URL = 'https://storage.googleapis.com/ai-studio-bucket-572556903588-us-west1/services/self-test-images/Tibetan%20Singing%20Bowl%20Sounds%20-%20OM.mp3';
@@ -45,7 +47,7 @@ const playBellDeclaration: FunctionDeclaration = {
   }
 };
 
-const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({ onAddNote, voiceSettings, systemInstruction, avatarUrl }) => {
+const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({ onAddNote, voiceSettings, systemInstruction, avatarUrl, geminiApiKey }) => {
   const [isActive, setIsActive] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
   const [transcription, setTranscription] = useState<string>('');
@@ -107,7 +109,7 @@ const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({ onAddNote, voiceSettings,
   const monitorSilence = useCallback(() => {
     if (!isActive) return;
     const elapsed = Date.now() - lastInteractionTimeRef.current;
-    if (elapsed > 15000) { // 15s of silence
+    if (elapsed > 15000) {
       if (sessionRef.current) {
         sessionRef.current.sendRealtimeInput({
           text: "[Facilitator Note: 15s of silence detected. Transition gently to closing the circle.]"
@@ -132,7 +134,8 @@ const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({ onAddNote, voiceSettings,
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+      const key = geminiApiKey || (typeof process !== 'undefined' && process.env?.API_KEY) || '';
+      const ai = new GoogleGenAI({ apiKey: key });
       const inputCtx = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
       const outputCtx = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
       audioContextRef.current = inputCtx;
@@ -205,33 +208,101 @@ const LiveVoiceView: React.FC<LiveVoiceViewProps> = ({ onAddNote, voiceSettings,
   useEffect(() => { return () => stopSession(); }, [stopSession]);
 
   return (
-    <div className="h-full flex flex-col justify-center items-center space-y-16 animate-in fade-in duration-1000">
+    <div className="h-full flex flex-col justify-center items-center space-y-14 anim-fade-up">
+
+      {/* Title */}
       <div className="text-center space-y-3">
-        <h2 className="text-4xl font-serif italic text-[#2c3e50] tracking-tight">Sacred Communion</h2>
-        <p className="text-[#96adb3] text-[10px] uppercase tracking-[0.3em] font-bold">Presence: {voiceSettings.voiceName}</p>
+        <h2 className="text-3xl md:text-4xl font-display italic text-charcoal tracking-tight">Sacred Communion</h2>
+        <p className="text-[10px] text-stone uppercase tracking-[0.3em] font-bold">
+          Presence: {voiceSettings.voiceName}
+        </p>
       </div>
 
+      {/* Central Orb */}
       <div className="relative flex items-center justify-center">
-        <div className="absolute w-64 h-64 bg-[#96adb3]/5 rounded-full blur-3xl transition-transform duration-300" style={{ transform: `scale(${visualizerScale * 1.8})` }}></div>
-        <button 
+        {/* Ambient glow */}
+        <div
+          className="absolute w-64 h-64 rounded-full blur-3xl transition-transform duration-300 pointer-events-none"
+          style={{
+            transform: `scale(${visualizerScale * 1.8})`,
+            background: isActive
+              ? 'radial-gradient(circle, rgba(61,90,76,0.12) 0%, rgba(107,143,113,0.06) 50%, transparent 80%)'
+              : 'radial-gradient(circle, rgba(61,90,76,0.05) 0%, transparent 70%)'
+          }}
+        />
+
+        {/* Secondary breathing ring */}
+        {isActive && (
+          <div
+            className="absolute w-56 h-56 rounded-full border border-forest/10 anim-breathe pointer-events-none"
+            style={{ transform: `scale(${visualizerScale * 1.2})` }}
+          />
+        )}
+
+        {/* Main button */}
+        <button
           onClick={isActive ? stopSession : startSession}
           disabled={isConnecting}
-          className={`relative z-10 w-48 h-48 rounded-full flex flex-col items-center justify-center shadow-xl transition-all duration-1000 group overflow-hidden ${
-            isActive ? 'bg-[#fff5f5] border border-red-200 text-red-600' : 'bg-white border border-[#96adb3]/30 text-[#96adb3] hover:border-[#96adb3] duck-egg-glow'
+          className={`relative z-10 w-44 h-44 md:w-48 md:h-48 rounded-full flex flex-col items-center justify-center shadow-xl transition-all duration-700 group overflow-hidden active:scale-[0.97] ${
+            isActive
+              ? 'bg-crisis-light border-2 border-crisis/30 text-crisis'
+              : isConnecting
+                ? 'bg-card border-2 border-forest/20 text-stone cursor-wait'
+                : 'bg-card border-2 border-forest/20 text-forest hover:border-forest/50 hover:shadow-2xl'
           }`}
         >
-          <img src={avatarUrl} alt="Presence" className={`absolute inset-0 w-full h-full object-cover grayscale-[30%] opacity-20 group-hover:opacity-40 transition-all duration-1000 ${isActive ? 'grayscale-0 opacity-100 scale-110' : ''}`} />
-          <div className="relative z-10 flex flex-col items-center justify-center bg-white/40 backdrop-blur-[2px] w-full h-full">
-            <span className="text-[10px] uppercase tracking-[0.2em] font-bold bg-white/80 px-4 py-2 rounded-full shadow-sm">
-              {isConnecting ? 'Aligning...' : isActive ? 'Depart' : 'Commence'}
-            </span>
+          {/* Avatar background */}
+          <img
+            src={avatarUrl}
+            alt="Presence"
+            className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ${
+              isActive
+                ? 'grayscale-0 opacity-100 scale-110'
+                : 'grayscale-[30%] opacity-15 group-hover:opacity-30'
+            }`}
+          />
+
+          {/* Label overlay */}
+          <div className="relative z-10 flex flex-col items-center justify-center w-full h-full bg-white/30 backdrop-blur-[2px]">
+            {isConnecting ? (
+              <div className="flex flex-col items-center gap-3">
+                <div className="w-5 h-5 border-2 border-forest/20 border-t-forest rounded-full animate-spin" />
+                <span className="text-[10px] uppercase tracking-[0.2em] font-bold bg-card/80 px-4 py-1.5 rounded-full shadow-sm">
+                  Aligning...
+                </span>
+              </div>
+            ) : (
+              <span className={`text-[10px] uppercase tracking-[0.2em] font-bold px-5 py-2 rounded-full shadow-sm ${
+                isActive ? 'bg-crisis-light/90 text-crisis' : 'bg-card/90 text-forest'
+              }`}>
+                {isActive ? 'Depart' : 'Commence'}
+              </span>
+            )}
           </div>
         </button>
       </div>
 
-      <div className="h-24 flex items-center justify-center">
-        {isActive && <p className="text-[#2c3e50]/50 text-sm font-light italic tracking-widest text-center px-6">{transcription || "Listening deeply..."}</p>}
+      {/* Transcription Area */}
+      <div className="h-20 flex items-center justify-center px-6">
+        {isActive && (
+          <p className="text-stone/60 text-sm font-light italic tracking-widest text-center max-w-md anim-fade">
+            {transcription || "Listening deeply..."}
+          </p>
+        )}
+        {!isActive && !isConnecting && (
+          <p className="text-stone-light text-xs tracking-wide text-center max-w-sm">
+            Press the circle to open a live voice channel with your facilitator.
+          </p>
+        )}
       </div>
+
+      {/* Status indicator */}
+      {isActive && (
+        <div className="flex items-center gap-2.5 anim-fade-up">
+          <div className="w-2 h-2 bg-sage rounded-full animate-pulse" />
+          <span className="text-[9px] uppercase tracking-[0.25em] font-bold text-sage">Session active</span>
+        </div>
+      )}
     </div>
   );
 };

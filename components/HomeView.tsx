@@ -13,42 +13,31 @@ const HomeView: React.FC<HomeViewProps> = ({ setView, activeModuleIds, avatarUrl
   const activeModules = SPECIALIST_MODULES.filter(m => activeModuleIds.includes(m.id));
 
   return (
-    <div className="h-full flex flex-col items-center space-y-12 animate-in fade-in zoom-in duration-1000 overflow-y-auto pt-4 pb-8">
-      {/* Modular Attunement Panel (Now at Top) */}
-      <button 
-        onClick={() => setView(View.ATTUNEMENTS)}
-        className="w-full max-w-4xl bg-white/40 border border-[#96adb3]/20 hover:border-[#96adb3]/50 rounded-[2.5rem] p-10 text-center transition-all duration-1000 group hover:shadow-2xl duck-egg-glow"
-      >
-        <div className="w-16 h-16 mx-auto mb-6 rounded-full overflow-hidden border-2 border-[#96adb3]/30 group-hover:border-[#96adb3] transition-all duration-700">
-           <img src={avatarUrl} alt="Facilitator" className="w-full h-full object-cover" />
-        </div>
-        <h4 className="font-serif italic text-3xl text-[#96adb3] mb-4 group-hover:scale-105 transition-transform duration-700">
-          Modular Attunement
-        </h4>
-        <p className="text-sm text-[#2c3e50]/50 leading-relaxed tracking-wider font-light max-w-xl mx-auto mb-6">
-          Refine the vessel for your unique journey. Attune Facilitator-AI with essences of <strong>Psychedelic Integration</strong>, <strong>Sharing Circles</strong>, or <strong>Harm Reduction</strong>.
-        </p>
-        <div className="inline-flex items-center gap-3 px-6 py-2 rounded-full border border-[#96adb3]/20 text-[10px] uppercase tracking-[0.2em] font-bold text-[#96adb3] group-hover:bg-[#96adb3] group-hover:text-white transition-all duration-700">
-          Configure Specialist Essences
-        </div>
-      </button>
+    <div className="h-full flex flex-col items-center overflow-y-auto py-6 md:py-10 px-2 space-y-10">
 
-      {/* Main Header - Updated max-w and text size to match the box above */}
-      <div className="max-w-4xl px-6 text-center space-y-6">
-        <h2 className="text-3xl md:text-5xl font-normal text-[#2c3e50] font-serif italic tracking-tight mb-4">
-          …the unreal retreat guru
+      {/* Hero */}
+      <div className="max-w-3xl text-center space-y-5 anim-fade-up">
+        <h2 className="text-3xl md:text-[2.8rem] font-display italic text-charcoal leading-tight tracking-tight">
+          &hellip;the unreal retreat guru
         </h2>
-        <p className="text-lg text-[#2c3e50]/60 mb-8 leading-relaxed font-light tracking-[0.05em] max-w-xl mx-auto">
-          A sacred vessel for integration, grounded in <span className="text-[#96adb3] border-b border-[#96adb3]/30 italic">UCP Core Skills</span>
+        <p className="text-base text-stone leading-relaxed font-light tracking-wide max-w-xl mx-auto">
+          A vessel for integration, grounded in{' '}
+          <span className="text-forest font-normal">UCP Core Skills</span>
           {activeModules.length > 0 && (
-            <>, refined by your personal <span className="text-[#96adb3] font-medium">{activeModules.length} active essences</span></>
+            <>, refined by{' '}
+            <span className="text-amber-dark font-medium">{activeModules.length} active attunement{activeModules.length > 1 ? 's' : ''}</span>
+            </>
           )}.
         </p>
 
+        {/* Active attunement pills */}
         {activeModules.length > 0 && (
-          <div className="flex flex-wrap justify-center gap-3 mb-8">
+          <div className="flex flex-wrap justify-center gap-2 pt-1">
             {activeModules.map(m => (
-              <span key={m.id} className="bg-white border border-[#96adb3]/20 text-[#96adb3] px-5 py-2 rounded-full text-[10px] tracking-[0.2em] uppercase font-bold shadow-sm animate-in slide-in-from-top-2 duration-700">
+              <span
+                key={m.id}
+                className="bg-forest/5 border border-forest/15 text-forest px-4 py-1.5 rounded-full text-[10px] tracking-widest uppercase font-bold anim-scale"
+              >
                 {m.icon} {m.name}
               </span>
             ))}
@@ -56,28 +45,84 @@ const HomeView: React.FC<HomeViewProps> = ({ setView, activeModuleIds, avatarUrl
         )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl px-6">
-        <button 
+      {/* Navigation Cards Grid */}
+      <div className="grid grid-cols-2 gap-4 md:gap-6 w-full max-w-3xl anim-fade-up anim-delay-2">
+
+        {/* Dialogue */}
+        <button
           onClick={() => setView(View.CHAT)}
-          className="flex flex-col items-center p-12 bg-white border border-[#96adb3]/10 hover:border-[#96adb3]/50 hover:shadow-2xl transition-all duration-1000 rounded-[3rem] group duck-egg-glow"
+          className="group flex flex-col items-center text-center p-8 md:p-10 bg-card border border-forest/8 hover:border-forest/25 rounded-2xl transition-all duration-500 hover:shadow-lg hover:shadow-forest/[0.06] active:scale-[0.98]"
         >
-          <div className="w-20 h-20 bg-[#fdfaf6] text-[#96adb3]/50 rounded-full flex items-center justify-center mb-6 group-hover:text-[#96adb3] group-hover:scale-110 transition-all duration-700 border border-[#96adb3]/10 overflow-hidden">
-             <ICONS.Chat />
+          <div className="w-14 h-14 rounded-xl bg-forest/5 text-forest/50 flex items-center justify-center mb-5 group-hover:bg-forest group-hover:text-parchment transition-all duration-500">
+            <ICONS.Chat />
           </div>
-          <h3 className="text-2xl font-serif text-[#2c3e50] mb-3 tracking-wide">Reflective Dialogue</h3>
-          <p className="text-[#96adb3]/60 text-xs tracking-widest uppercase font-bold">Deep Textual Integration</p>
+          <h3 className="text-lg font-display text-charcoal mb-1.5">Reflective Dialogue</h3>
+          <p className="text-[10px] text-stone-light tracking-widest uppercase font-bold">Text-based</p>
         </button>
 
-        <button 
+        {/* Communion */}
+        <button
           onClick={() => setView(View.VOICE)}
-          className="flex flex-col items-center p-12 bg-white border border-[#96adb3]/10 hover:border-[#96adb3]/50 hover:shadow-2xl transition-all duration-1000 rounded-[3rem] group duck-egg-glow"
+          className="group flex flex-col items-center text-center p-8 md:p-10 bg-card border border-forest/8 hover:border-forest/25 rounded-2xl transition-all duration-500 hover:shadow-lg hover:shadow-forest/[0.06] active:scale-[0.98]"
         >
-          <div className="w-20 h-20 bg-[#fdfaf6] text-[#96adb3]/50 rounded-full flex items-center justify-center mb-6 group-hover:text-[#96adb3] group-hover:scale-110 transition-all duration-700 border border-[#96adb3]/10 overflow-hidden">
-             <ICONS.Mic />
+          <div className="w-14 h-14 rounded-xl bg-forest/5 text-forest/50 flex items-center justify-center mb-5 group-hover:bg-forest group-hover:text-parchment transition-all duration-500">
+            <ICONS.Mic />
           </div>
-          <h3 className="text-2xl font-serif text-[#2c3e50] mb-3 tracking-wide">Sacred Communion</h3>
-          <p className="text-[#96adb3]/60 text-xs tracking-widest uppercase font-bold">Real-time Voice Presence</p>
+          <h3 className="text-lg font-display text-charcoal mb-1.5">Sacred Communion</h3>
+          <p className="text-[10px] text-stone-light tracking-widest uppercase font-bold">Voice presence</p>
         </button>
+
+        {/* Journal */}
+        <button
+          onClick={() => setView(View.NOTES)}
+          className="group flex flex-col items-center text-center p-8 md:p-10 bg-card border border-forest/8 hover:border-forest/25 rounded-2xl transition-all duration-500 hover:shadow-lg hover:shadow-forest/[0.06] active:scale-[0.98]"
+        >
+          <div className="w-14 h-14 rounded-xl bg-forest/5 text-forest/50 flex items-center justify-center mb-5 group-hover:bg-forest group-hover:text-parchment transition-all duration-500">
+            <ICONS.Book />
+          </div>
+          <h3 className="text-lg font-display text-charcoal mb-1.5">Journal</h3>
+          <p className="text-[10px] text-stone-light tracking-widest uppercase font-bold">Session archive</p>
+        </button>
+
+        {/* Attunements */}
+        <button
+          onClick={() => setView(View.ATTUNEMENTS)}
+          className="group flex flex-col items-center text-center p-8 md:p-10 bg-card border border-forest/8 hover:border-forest/25 rounded-2xl transition-all duration-500 hover:shadow-lg hover:shadow-forest/[0.06] active:scale-[0.98] relative"
+        >
+          <div className="w-14 h-14 rounded-xl bg-forest/5 text-forest/50 flex items-center justify-center mb-5 group-hover:bg-forest group-hover:text-parchment transition-all duration-500">
+            <ICONS.Sliders />
+          </div>
+          <h3 className="text-lg font-display text-charcoal mb-1.5">Attunements</h3>
+          <p className="text-[10px] text-stone-light tracking-widest uppercase font-bold">Specialist modes</p>
+          {activeModuleIds.length > 0 && (
+            <span className="absolute top-4 right-4 w-6 h-6 bg-amber text-white rounded-full flex items-center justify-center text-[10px] font-bold shadow-sm">
+              {activeModuleIds.length}
+            </span>
+          )}
+        </button>
+      </div>
+
+      {/* Facilitator Avatar & Presence Indicator */}
+      <div className="flex items-center gap-4 py-3 px-6 bg-card/60 border border-forest/8 rounded-2xl anim-fade-up anim-delay-4">
+        <div className="w-10 h-10 rounded-xl overflow-hidden border border-forest/15">
+          <img src={avatarUrl} alt="Facilitator" className="w-full h-full object-cover" />
+        </div>
+        <div>
+          <p className="text-xs font-medium text-charcoal">Your facilitator is ready</p>
+          <p className="text-[10px] text-stone-light tracking-wide">Choose a modality above to begin</p>
+        </div>
+        <div className="w-2 h-2 bg-sage rounded-full animate-pulse ml-2" />
+      </div>
+
+      {/* Safety Footer */}
+      <div className="max-w-3xl w-full pt-4 border-t border-forest/5 anim-fade-up anim-delay-5">
+        <div className="flex items-start gap-3 text-stone-light">
+          <ICONS.Info />
+          <p className="text-[10px] leading-relaxed tracking-wide">
+            <strong className="text-stone font-medium">This is not therapy.</strong> Facilitator-AI is an experimental AI tool for personal reflection. It cannot diagnose, treat, or replace professional mental health support.
+            In a crisis, call <strong className="text-crisis">988</strong> or text <strong className="text-crisis">HOME to 741741</strong>.
+          </p>
+        </div>
       </div>
     </div>
   );
